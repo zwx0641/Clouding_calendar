@@ -1,4 +1,5 @@
-import 'package:clouding_calendar/feedback.dart';
+import 'package:clouding_calendar/routes.dart' as prefix0;
+import 'package:clouding_calendar/login.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -22,14 +23,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       
-      title: 'Table sasasa Demo',
+      title: 'Table Demo',
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.grey,
       ),
-      home: MyHomePage(title: 'Table Demo'),
-      routes: {
-        'feedbackRoute': (BuildContext context) => new FeedbackPage()
-      },
+      /* home: MyHomePage(title: "ZENO's calendar"), */
+      home: LoginPage(),
+      routes: prefix0.routes,
     );
   }
 }
@@ -108,23 +108,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
 //日历视图按钮
   SelectView(IconData icon, String text, String id) {
-      return new PopupMenuItem<String>(
-          value: id,
-          child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                  new Icon(icon, color: Colors.blue),
-                  new Text(text),
-                  
-              ],
-          )
-      );
+    return new PopupMenuItem<String>(
+        value: id,
+        child: new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+                new Icon(icon, color: Colors.blue),
+                new Text(text),
+                
+            ],
+        )
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: AppBar(
         ////右上角选择日历视图
@@ -144,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               },
           )
         ],
-        title: Text(widget.title),
+        title: Text('A clouding calendar'),
       ),
       //左侧抽屉
       drawer: Drawer(
@@ -206,10 +204,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               title: Text('Help'),
               leading: new CircleAvatar(child: new Icon(Icons.help),),
               onTap: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.week); 
-                });
-                Navigator.pop(context);
+                Navigator.of(context).pushNamed('helpRoute');
               },
             ),
             ListTile(
@@ -237,7 +232,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.white,
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.blueGrey,
         onPressed: _AddActivities,
         child: new Icon(Icons.add),
       ),
@@ -264,24 +259,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   children: <Widget>[
                     //添加事件
                     new ListTile(
-                      leading: new Icon(Icons.event),
-                      title: new Text('Event'),
-                      onTap: () async {
+                      leading: new Icon(Icons.event, color: Colors.blueGrey),
+                      title: new Text('Event', style: TextStyle(color: Colors.blueGrey)),
+                      onTap: () {
                         
                       },
                     ),
                     //添加提醒
                     new ListTile(
-                      leading: new Icon(Icons.alarm_add),
-                      title: new Text('Reminder'),
-                      onTap: () async {
+                      leading: new Icon(Icons.alarm_add, color: Colors.blueGrey),
+                      title: new Text('Reminder', style: TextStyle(color: Colors.blueGrey)),
+                      onTap: () {
                         
                       },
                     )
                   ],
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.blueAccent,
+                  color: Colors.orangeAccent,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(25),
                     topRight: Radius.circular(25)
