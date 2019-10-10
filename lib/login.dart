@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:clouding_calendar/custom_router.dart';
-import 'package:clouding_calendar/main.dart';
 import 'package:clouding_calendar/register.dart';
 import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';

@@ -1,3 +1,5 @@
+import 'package:clouding_calendar/custom_router.dart';
+import 'package:clouding_calendar/reminder.dart';
 import 'package:clouding_calendar/routes.dart' as prefix0;
 import 'package:clouding_calendar/login.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.grey,
       ),
       /* home: MyHomePage(title: "ZENO's calendar"), */
-      home: LoginPage(),
+      home: MyHomePage(),
       routes: prefix0.routes,
     );
   }
@@ -204,14 +206,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               title: Text('Help'),
               leading: new CircleAvatar(child: new Icon(Icons.help),),
               onTap: () {
-                Navigator.of(context).pushNamed('helpRoute');
+                Navigator.popAndPushNamed(context, 'helpRoute');
               },
             ),
             ListTile(
               title: Text('Feedbacks'),
               leading: new CircleAvatar(child: new Icon(Icons.feedback),),
               onTap: () {
-                Navigator.of(context).pushNamed('feedbackRoute');
+                Navigator.popAndPushNamed(context, 'feedbackRoute');
               },
             )
           ],
@@ -257,12 +259,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    //添加事件
+                    //添加需要完成的事件
                     new ListTile(
                       leading: new Icon(Icons.event, color: Colors.blueGrey),
                       title: new Text('Event', style: TextStyle(color: Colors.blueGrey)),
                       onTap: () {
-                        
+                        Navigator.of(context).push(new CustomRoute(new ReminderPage()));
                       },
                     ),
                     //添加提醒
@@ -270,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       leading: new Icon(Icons.alarm_add, color: Colors.blueGrey),
                       title: new Text('Reminder', style: TextStyle(color: Colors.blueGrey)),
                       onTap: () {
-                        
+                        Navigator.of(context).push(new CustomRoute(new ReminderPage()));
                       },
                     )
                   ],
