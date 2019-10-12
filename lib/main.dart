@@ -1,7 +1,6 @@
 import 'package:clouding_calendar/custom_router.dart';
 import 'package:clouding_calendar/reminder.dart';
 import 'package:clouding_calendar/routes.dart' as prefix0;
-import 'package:clouding_calendar/login.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';

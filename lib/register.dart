@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:clouding_calendar/custom_router.dart';
-import 'package:clouding_calendar/login.dart';
 import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
-import 'routes.dart';
 
 
 class RegisterPage extends StatefulWidget {
@@ -247,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       var request = await httpClient.getUrl(Uri.parse(url));
       var response = await request.close();
-      if (response.statusCode == HttpStatus.OK) {
+      if (response.statusCode == HttpStatus.ok) {
         var json = await response.transform(utf8.decoder).join();
         data = jsonDecode(json);
         _hintMessage = data['msg'];

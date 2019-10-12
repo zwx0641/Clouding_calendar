@@ -14,6 +14,8 @@ class _ReminderPageState extends State<ReminderPage> {
   bool _invisible = true;
   TextStyle _standard = new TextStyle(fontSize: 30);
   String _reminderTitle;
+  List<String> _repeatArray = ['Does not repeat', 'Everyday', 'Every week', 'Every month', 'Every year'];
+  String _repeatsMsg = 'Repeats';
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +56,71 @@ class _ReminderPageState extends State<ReminderPage> {
       });
     }
 
+    //提醒的类型
+    List<Widget> tiles = [];
+    for (int i = 0; i < 5; i++) {
+      //i=0为不重复，有图标
+      if (i == 0) {
+        tiles.add(
+          new ListTile(
+            leading: new Icon(Icons.replay, color: Colors.blueGrey),
+            title: new Text(_repeatArray[i], style: TextStyle(color: Colors.blueGrey)),
+            onTap: () {
+              setState(() {
+                _repeatsMsg = _repeatArray[i];
+              });
+            },
+          ),
+        );
+      } else {
+        //i!=0为重复，无图标
+        tiles.add(
+          new ListTile(
+            leading: new Icon(Icons.replay, color: Colors.orangeAccent),
+            title: new Text(_repeatArray[i], style: TextStyle(color: Colors.blueGrey)),
+            onTap: () {
+              setState(() {
+                _repeatsMsg = _repeatArray[i];
+              });
+            },
+          ),
+        );
+      }
+    }
+
+    void _AddActivities() {
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Stack(
+            children: <Widget>[
+              Container(
+                height: 25,
+                width: double.infinity,
+                color: Colors.black54,
+              ),
+              Container(
+                height: 280,
+                width: double.infinity,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: tiles   //呼出提醒列表
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.orangeAccent,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25)
+                  )
+                ),
+              ),
+              
+            ],
+          );
+        }
+      );
+    }
+
     //提醒重复几次
 
     return new Scaffold(
@@ -82,6 +149,7 @@ class _ReminderPageState extends State<ReminderPage> {
                 ),
                 onChanged: (String value) => _reminderTitle = value,
               ),
+          
               Column(
                 children: <Widget>[
                   //是否全天提醒
@@ -144,8 +212,8 @@ class _ReminderPageState extends State<ReminderPage> {
                     children: <Widget>[
                       Icon(Icons.replay),
                       GestureDetector(
-                        child: Text('Repeats', style: TextStyle(fontSize: 18)),
-                        onTap: () {},
+                        child: Text(_repeatsMsg, style: TextStyle(fontSize: 18)),
+                        onTap: _AddActivities
                       ),
                       IgnorePointer(
                         ignoring: true,
