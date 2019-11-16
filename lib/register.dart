@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
-import 'routes.dart' as rt;
+
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -94,13 +95,10 @@ class _RegisterPageState extends State<RegisterPage> {
   Align buildOtherRegisterText() {
     return Align(
       alignment: Alignment.center,
-      child: GestureDetector(
-        child: Text(
-          'Use another account',
-          style: TextStyle(color: Colors.grey, fontSize: 14.0),
-        ),
-        onTap: () {Navigator.popAndPushNamed(context, 'loginPage');},
-      )
+      child: Text(
+        'Use another account',
+        style: TextStyle(color: Colors.grey, fontSize: 14.0),
+      ),
     );
   }
 
@@ -116,9 +114,40 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           color: Colors.black,
           onPressed: () {
-            
-            //执行登陆方法
-            return sendPost();
+            /* if (_formKey.currentState.validate()) {
+              _formKey.currentState.save();
+              //TODO:执行登陆方法
+            } */
+            _getRegister();
+            return showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          SizedBox(height: 15),
+                          Text(_hintMessage, style: TextStyle(fontSize: 20),),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text('Confirm', style: TextStyle(color: Colors.white),),
+                        onPressed: () {
+                          if (_code == 200) {
+                            Navigator.popAndPushNamed(context, 'loginRoute');
+                          } else {
+                            Navigator.of(context).pop();
+                          }
+                          },
+                        color: Colors.blueGrey,
+                      )
+                    ],
+                  );
+                }
+              );
           },
           shape: StadiumBorder(side: BorderSide()),
         ),
@@ -208,54 +237,24 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   //注册方法，后端交互
-  Future<Widget> sendPost() async {
-    var url = rt.serverUrl + '/register';
-    var response = await http.post(
-      Uri.encodeFull(url),
-      body: json.encode({
-        'username': _username,
-        'password': _password,
-        'email': _email
-      }), headers: {
-        "content-type" : "application/json",
-        "accept" : "application/json",
+  _getRegister() async {
+    var url = 'http://172.17.95.177:8080/user/uregister?email=$_email&password=$_password&password2=$_repeatPassword&username=$_username';
+    var httpClient = new HttpClient();
+
+    try {
+      var request = await httpClient.getUrl(Uri.parse(url));
+      var response = await request.close();
+      if (response.statusCode == HttpStatus.ok) {
+        var json = await response.transform(utf8.decoder).join();
+        data = jsonDecode(json);
+        _hintMessage = data['msg'];
+        _code = data['code'];
+      } else {
+        print('error');
       }
-    );
-    data = jsonDecode(response.body.toString());
-    _hintMessage = data['msg'];
-    _code = data['status'];
-    //返回对话框，是否成功
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                SizedBox(height: 15),
-                Text(_hintMessage, style: TextStyle(fontSize: 20),),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text('Confirm', style: TextStyle(color: Colors.white),),
-              onPressed: () {
-                if (_code == 200) {
-                  var user = json.decode(data['data'].toString());
-                  rt.setGlobalUserInfo(user['id']);
-                  Navigator.popAndPushNamed(context, 'loginRoute');
-                } else {
-                  Navigator.of(context).pop();
-                }
-              },
-              color: Colors.blueGrey,
-            )
-          ],
-        );
-      }
-    );
+    } catch (exception) {
+      _hintMessage = 'Failed getting IP address';
+    }
   }
 }
 
