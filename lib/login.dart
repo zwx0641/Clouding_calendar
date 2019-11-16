@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:clouding_calendar/custom_router.dart';
 import 'package:clouding_calendar/register.dart';
 import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
-
+import 'package:http/http.dart' as http;
+import 'routes.dart' as rt;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -132,40 +132,9 @@ class _LoginPageState extends State<LoginPage> {
           ),
           color: Colors.black,
           onPressed: () {
-            /* if (_formKey.currentState.validate()) {
-              _formKey.currentState.save();
-              //TODO:执行登陆方法
-            } */
-            _getLogin();
-            return showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: <Widget>[
-                          SizedBox(height: 15),
-                          Text(_hintMessage, style: TextStyle(fontSize: 20),),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      new FlatButton(
-                        child: new Text('Confirm', style: TextStyle(color: Colors.white),),
-                        onPressed: () {
-                          if (_code == 200) {
-                            Navigator.popAndPushNamed(context, 'homepageRoute');
-                          } else {
-                            Navigator.of(context).pop();
-                          }
-                          },
-                        color: Colors.blueGrey,
-                      )
-                    ],
-                  );
-                }
-              );
+          
+            //执行登陆方法
+            return sendPost();
           },
           shape: StadiumBorder(side: BorderSide()),
         ),
@@ -253,24 +222,53 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   //Login方法，与后端交互
-  _getLogin() async {
-    var url = 'http://172.17.95.177:8080/user/ulogin?email=$_email&password=$_password';
-    var httpClient = new HttpClient();
-
-    try {
-      var request = await httpClient.getUrl(Uri.parse(url));
-      var response = await request.close();
-      if (response.statusCode == HttpStatus.OK) {
-        var json = await response.transform(utf8.decoder).join();
-        data = jsonDecode(json);
-        _hintMessage = data['msg'];
-        _code = data['code'];
-      } else {
-        print('error');
+  Future<Widget> sendPost() async {
+    var url = rt.serverUrl + '/login';
+    var response = await http.post(
+      Uri.encodeFull(url),
+      body: json.encode({
+        'password': _password,
+        'email': _email
+      }), headers: {
+        "content-type" : "application/json",
+        "accept" : "application/json",
       }
-    } catch (exception) {
-      _hintMessage = 'Failed getting IP address';
-    }
+    );
+    var data = jsonDecode(response.body.toString());
+    _hintMessage = data['msg'];
+    _code = data['status'];
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                SizedBox(height: 15),
+                Text(_hintMessage, style: TextStyle(fontSize: 20),),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Confirm', style: TextStyle(color: Colors.white),),
+              onPressed: () {
+                if (_code == 200) {
+                  var user = data['data'];
+                  //存id到本地储存
+                  rt.setGlobalUserInfo(user['id']);
+                  Navigator.popAndPushNamed(context, 'homepageRoute');
+                } else {
+                  Navigator.of(context).pop();
+                }
+                },
+              color: Colors.blueGrey,
+            )
+          ],
+        );
+      }
+    );
   }
 }
 

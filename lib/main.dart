@@ -1,10 +1,17 @@
+import 'dart:convert';
+
 import 'package:clouding_calendar/custom_router.dart';
+import 'package:clouding_calendar/login.dart';
+import 'package:clouding_calendar/register.dart';
 import 'package:clouding_calendar/reminder.dart';
 import 'package:clouding_calendar/routes.dart' as prefix0;
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:clouding_calendar/template.dart';
+import 'routes.dart' as rt;
+import 'package:http/http.dart' as http;
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
@@ -29,7 +36,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.grey,
       ),
       /* home: MyHomePage(title: "ZENO's calendar"), */
-      home: MyHomePage(),
+      home: LoginPage(),
       routes: prefix0.routes,
     );
   }
@@ -213,6 +220,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               leading: new CircleAvatar(child: new Icon(Icons.feedback),),
               onTap: () {
                 Navigator.popAndPushNamed(context, 'feedbackRoute');
+              },
+            ),
+            ListTile(
+              title: Text('Logout'),
+              leading: new CircleAvatar(child: new Icon(Icons.power_settings_new),),
+              onTap: () {
+                logout();
               },
             )
           ],
@@ -438,50 +452,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-/*   Widget _buildButtons() {
-    return Column(
-      children: <Widget>[
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            RaisedButton(
-              child: Text('month'),
-              onPressed: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.month);
-                });
-              },
-            ),
-            RaisedButton(
-              child: Text('2 weeks'),
-              onPressed: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.twoWeeks);
-                });
-              },
-            ),
-            RaisedButton(
-              child: Text('week'),
-              onPressed: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.week);
-                });
-              },
-            ),
-          ],
-        ),
-        const SizedBox(height: 8.0),
-        RaisedButton(
-          child: Text('setDay 10-07-2019'),
-          onPressed: () {
-            _calendarController.setSelectedDay(DateTime(2019, 7, 10), runCallback: true);
-          },
-        ),
-      ],
-    );
-  } */
-
   Widget _buildEventList() {
     return ListView(
       children: _selectedEvents
@@ -498,5 +468,32 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ))
           .toList(),
     );
+  }
+
+  logout() async {
+    //获取本地缓存
+    var userId = await rt.getGlobalUserInfo();
+    var url = rt.serverUrl + '/logout?userId=' + userId;
+    //删除redis缓存
+    var response = await http.post(
+      Uri.encodeFull(url),
+      headers: {
+        "content-type" : "application/json",
+        "accept" : "application/json",
+      }
+    );
+    var data = jsonDecode(response.body.toString());
+    var status = data['status'];
+
+    if (status == 200) {
+      Fluttertoast.showToast(
+        msg: 'Logout successfully',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER
+      );
+      //删除本地缓存
+      rt.deleteGloabalUserInfo();
+      Navigator.popAndPushNamed(context, 'loginRoute');
+    }
   }
 }
