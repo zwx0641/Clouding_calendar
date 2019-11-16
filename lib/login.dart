@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
 import 'package:http/http.dart' as http;
 import 'routes.dart' as rt;
+import 'userServices.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -257,7 +258,7 @@ class _LoginPageState extends State<LoginPage> {
                 if (_code == 200) {
                   var user = data['data'];
                   //存id到本地储存
-                  rt.setGlobalUserInfo(user['id']);
+                  setGlobalUserInfo(user['id']);
                   Navigator.popAndPushNamed(context, 'homepageRoute');
                 } else {
                   Navigator.of(context).pop();

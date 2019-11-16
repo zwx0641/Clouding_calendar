@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:clouding_calendar/custom_router.dart';
 import 'package:clouding_calendar/login.dart';
-import 'package:clouding_calendar/register.dart';
 import 'package:clouding_calendar/reminder.dart';
 import 'package:clouding_calendar/routes.dart' as prefix0;
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:clouding_calendar/template.dart';
 import 'routes.dart' as rt;
 import 'package:http/http.dart' as http;
+import 'userServices.dart';
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
@@ -472,7 +472,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   logout() async {
     //获取本地缓存
-    var userId = await rt.getGlobalUserInfo();
+    var userId = await getGlobalUserInfo();
     var url = rt.serverUrl + '/logout?userId=' + userId;
     //删除redis缓存
     var response = await http.post(
@@ -492,7 +492,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         gravity: ToastGravity.CENTER
       );
       //删除本地缓存
-      rt.deleteGloabalUserInfo();
+      deleteGloabalUserInfo();
       Navigator.popAndPushNamed(context, 'loginRoute');
     }
   }

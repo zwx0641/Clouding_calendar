@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
 import 'routes.dart' as rt;
+import 'userServices.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -244,7 +245,7 @@ class _RegisterPageState extends State<RegisterPage> {
               onPressed: () {
                 if (_code == 200) {
                   var user = json.decode(data['data'].toString());
-                  rt.setGlobalUserInfo(user['id']);
+                  setGlobalUserInfo(user['id']);
                   Navigator.popAndPushNamed(context, 'loginRoute');
                 } else {
                   Navigator.of(context).pop();
