@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:clouding_calendar/custom_router.dart';
 import 'package:clouding_calendar/login.dart';
-import 'package:clouding_calendar/register.dart';
 import 'package:clouding_calendar/reminder.dart';
 import 'package:clouding_calendar/routes.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:clouding_calendar/template.dart';
@@ -157,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            header,
+            header(),
             ListTile(
               title: Text('Month'),
               leading: new CircleAvatar(child: new Icon(Icons.today),),
@@ -495,5 +495,73 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       rt.deleteGloabalUserInfo();
       Navigator.popAndPushNamed(context, 'loginRoute');
     }
+  }
+
+  var imagePath = 'images/pic1.jpg';
+  Widget header() {
+    return DrawerHeader(
+      padding: EdgeInsets.zero, /* padding置为0 */
+      child: new Stack(children: <Widget>[ /* 用stack来放背景图片 */
+        new Image.asset(
+          'images/background.jpg', fit: BoxFit.fill, width: double.infinity,),
+        new Align(/* 先放置对齐 */
+          alignment: FractionalOffset.bottomLeft,
+          child: Container(
+            height: 70.0,
+            margin: EdgeInsets.only(left: 12.0, bottom: 12.0),
+            child: new Row(
+              mainAxisSize: MainAxisSize.min, /* 宽度只用包住子组件即可 */
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                new GestureDetector(
+                  //头像显示
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage(imagePath),
+                    radius: 35.0,
+                  ),
+                  onTap: () {
+                    uploadFaceImage();
+                    
+                  },
+                ),
+                
+                new Container(
+                  margin: EdgeInsets.only(left: 6.0),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, // 水平方向左对齐
+                    mainAxisAlignment: MainAxisAlignment.center, // 竖直方向居中
+                    children: <Widget>[
+                      new Text("Zeno", style: new TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white),),
+                      new Text("What's up", style: new TextStyle(
+                          fontSize: 14.0, color: Colors.white),),
+                    ],
+                  ),
+                ),
+              ],),
+          ),
+        ),
+      ]),
+      );
+  }
+
+  //上传头像方法
+  uploadFaceImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      imagePath = image.toString();
+    });
+    var url = rt.serverUrl + "/user/uploadFace";
+    var response = await http.post(
+      Uri.encodeFull(url),
+      headers: {
+        'content-type': 'application/json',
+        'accept': 'application/json'
+      }
+    );
+    var data = jsonDecode(response.body.toString());
   }
 }
