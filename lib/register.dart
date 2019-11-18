@@ -246,6 +246,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 if (_code == 200) {
                   var user = json.decode(data['data'].toString());
                   setGlobalUserInfo(user['id']);
+                  //设user为login
+                  setUserLoginState(true);
                   Navigator.popAndPushNamed(context, 'loginRoute');
                 } else {
                   Navigator.of(context).pop();

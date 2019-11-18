@@ -36,7 +36,17 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.grey,
       ),
       /* home: MyHomePage(title: "ZENO's calendar"), */
-      home: LoginPage(),
+      home: FutureBuilder<bool>(
+            future: getUserLoginState(),
+             builder:(BuildContext context, AsyncSnapshot<bool> snapshot){
+          if (snapshot.data == false){
+                  return LoginPage();
+          }
+          else{
+            return MyHomePage();
+          }
+        }
+      ),
       routes: prefix0.routes,
     );
   }
@@ -493,6 +503,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       );
       //删除本地缓存
       deleteGloabalUserInfo();
+      //设user没有login
+      setUserLoginState(false);
       Navigator.popAndPushNamed(context, 'loginRoute');
     }
   }
