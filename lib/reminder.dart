@@ -136,18 +136,18 @@ class _ReminderPageState extends State<ReminderPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
         child: Form(
-          key: GlobalKey<FormState>(),
+          
           child: Column(
             children: <Widget>[
               //提醒事件的标题
               TextField(
+                keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   hintStyle: new TextStyle(fontSize: 20),
                   hintText: 'Reminde me of ...',
                   prefixIcon: Icon(Icons.add, color: Colors.white),
                   border: InputBorder.none
                 ),
-                onChanged: (String value) => _reminderTitle = value,
               ),
           
               Column(

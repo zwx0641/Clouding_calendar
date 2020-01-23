@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'routes.dart' as rt;
 import 'userServices.dart';
 
+
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -222,6 +224,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  
   //Login方法，与后端交互
   Future<Widget> sendPost() async {
     var url = rt.serverUrl + '/login';
@@ -257,12 +260,13 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 if (_code == 200) {
                   var user = data['data'];
+             
                   //存id到本地储存
                   setGlobalUserInfo(user['id']);
                   Navigator.popAndPushNamed(context, 'homepageRoute');
                 } else {
                   Navigator.of(context).pop();
-                }
+                  }
                 },
               color: Colors.blueGrey,
             )

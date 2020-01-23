@@ -39,11 +39,11 @@ class MyApp extends StatelessWidget {
       home: FutureBuilder<bool>(
             future: getUserLoginState(),
              builder:(BuildContext context, AsyncSnapshot<bool> snapshot){
-          if (snapshot.data == false){
-                  return LoginPage();
+          if (snapshot.data == true){
+                  return MyHomePage();
           }
           else{
-            return MyHomePage();
+            return LoginPage();
           }
         }
       ),
@@ -483,7 +483,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   logout() async {
     //获取本地缓存
     var userId = await getGlobalUserInfo();
-    var url = rt.serverUrl + '/logout?userId=' + userId;
+    var url = rt.serverUrl + '/logout?userId=' + userId; 
     //删除redis缓存
     var response = await http.post(
       Uri.encodeFull(url),

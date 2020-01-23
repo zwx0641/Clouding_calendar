@@ -24,7 +24,7 @@ Widget header = DrawerHeader(
                 crossAxisAlignment: CrossAxisAlignment.start, // 水平方向左对齐
                 mainAxisAlignment: MainAxisAlignment.center, // 竖直方向居中
                 children: <Widget>[
-                  new Text("Zeno", style: new TextStyle(
+                  new Text('username', style: new TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.w400,
                       color: Colors.white),),

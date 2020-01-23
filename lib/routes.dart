@@ -14,5 +14,5 @@ final routes = {
   'reminderPageRoute': (BuildContext context) => new ReminderPage()
 };
 
-final serverUrl = 'http://172.17.95.177:8080';
+final serverUrl = 'http://169.254.247.236:8080';
 
