@@ -241,6 +241,7 @@ class _LoginPageState extends State<LoginPage> {
     var data = jsonDecode(response.body.toString());
     _hintMessage = data['msg'];
     _code = data['status'];
+    
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -263,6 +264,7 @@ class _LoginPageState extends State<LoginPage> {
              
                   //存id到本地储存
                   setGlobalUserInfo(user['id']);
+                  setUserEmail(user['email']);
                   Navigator.popAndPushNamed(context, 'homepageRoute');
                 } else {
                   Navigator.of(context).pop();

@@ -284,16 +284,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   children: <Widget>[
                     //添加需要完成的事件
                     new ListTile(
-                      leading: new Icon(Icons.event, color: Colors.blueGrey),
-                      title: new Text('Event', style: TextStyle(color: Colors.blueGrey)),
+                      leading: new Icon(Icons.event, color: Colors.white),
+                      title: new Text('Event', style: TextStyle(color: Colors.white)),
                       onTap: () {
                         Navigator.of(context).push(new CustomRoute(new ReminderPage()));
                       },
                     ),
                     //添加提醒
                     new ListTile(
-                      leading: new Icon(Icons.alarm_add, color: Colors.blueGrey),
-                      title: new Text('Reminder', style: TextStyle(color: Colors.blueGrey)),
+                      leading: new Icon(Icons.alarm_add, color: Colors.white),
+                      title: new Text('Reminder', style: TextStyle(color: Colors.white)),
                       onTap: () {
                         Navigator.of(context).push(new CustomRoute(new ReminderPage()));
                       },
@@ -301,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   ],
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.orangeAccent,
+                  color: Colors.deepOrange,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(25),
                     topRight: Radius.circular(25)

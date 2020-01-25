@@ -28,3 +28,15 @@ Future<bool> getUserLoginState() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getBool('isLogin');
 }
+
+//设置登陆状态
+setUserEmail(userEmail) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString("userEmail", userEmail);
+}
+
+//获取登录状态
+Future<String> getUserEmail() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('userEmail');
+}
