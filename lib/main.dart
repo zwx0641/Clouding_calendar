@@ -66,17 +66,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  Map<DateTime, List> _events;
+  //Map<DateTime, List> _events;
   List _selectedEvents;
   AnimationController _animationController;
   CalendarController _calendarController;
-
+  
   @override
   void initState() {
     super.initState();
     final _selectedDay = DateTime.now();
-
-    _events = {
+    getReminder();
+    /* rt.Global.events = {
       _selectedDay.subtract(Duration(days: 30)): ['Event A0', 'Event B0', 'Event C0'],
       _selectedDay.subtract(Duration(days: 27)): ['Event A1'],
       _selectedDay.subtract(Duration(days: 20)): ['Event A2', 'Event B2', 'Event C2', 'Event D2'],
@@ -92,9 +92,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       _selectedDay.add(Duration(days: 17)): ['Event A12', 'Event B12', 'Event C12', 'Event D12'],
       _selectedDay.add(Duration(days: 22)): ['Event A13', 'Event B13'],
       _selectedDay.add(Duration(days: 26)): ['Event A14', 'Event B14', 'Event C14'],
-    };
+    }; */
 
-    _selectedEvents = _events[_selectedDay] ?? [];
+    _selectedEvents = rt.Global.events[_selectedDay] ?? [];
 
     _calendarController = CalendarController();
 
@@ -319,7 +319,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Widget _buildTableCalendar() {
     return TableCalendar(
       calendarController: _calendarController,
-      events: _events,
+      events: rt.Global.events,
       holidays: _holidays,
       startingDayOfWeek: StartingDayOfWeek.monday,
       calendarStyle: CalendarStyle(
@@ -345,7 +345,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return TableCalendar(
       locale: 'pl_PL',
       calendarController: _calendarController,
-      events: _events,
+      events: rt.Global.events,
       holidays: _holidays,
       initialCalendarFormat: CalendarFormat.month,
       formatAnimation: FormatAnimation.slide,
@@ -483,7 +483,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   logout() async {
     //获取本地缓存
     var userId = await getGlobalUserInfo();
-    var url = rt.serverUrl + '/logout?userId=' + userId; 
+    var url = rt.Global.serverUrl + '/logout?userId=' + userId; 
     //删除redis缓存
     var response = await http.post(
       Uri.encodeFull(url),

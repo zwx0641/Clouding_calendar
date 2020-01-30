@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:clouding_calendar/main.dart';
+import 'main.dart';
 import 'package:clouding_calendar/userServices.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -230,11 +230,12 @@ class _ReminderPageState extends State<ReminderPage> {
       final dt = DateTime(_selectedDate.year, _selectedDate.month, 
                           _selectedDate.day, _selectedTime.hour, _selectedTime.minute);
       final format = new DateFormat('yyyy-MM-dd hh:mm:ss');
+      
       String _remindTime = format.format(dt);
       //Which user sets the reminder
       String email = await getUserEmail();
       _remindTime = _remindTime.replaceAll(' ', 'T');
-      var url = rt.serverUrl + '/savereminder';
+      var url = rt.Global.serverUrl + '/savereminder';
       var response = await http.post(
         Uri.encodeFull(url),
         body: json.encode({
@@ -279,10 +280,9 @@ class _ReminderPageState extends State<ReminderPage> {
         Navigator.popAndPushNamed(context, 'homepageRoute');
       }
     }
-
+ 
     //A sheet containing repeat selections
     void _AddActivities() {
-
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {

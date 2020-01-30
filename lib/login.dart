@@ -227,7 +227,7 @@ class _LoginPageState extends State<LoginPage> {
   
   //Login方法，与后端交互
   Future<Widget> sendPost() async {
-    var url = rt.serverUrl + '/login';
+    var url = rt.Global.serverUrl + '/login';
     var response = await http.post(
       Uri.encodeFull(url),
       body: json.encode({

@@ -210,7 +210,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   //注册方法，后端交互
   Future<Widget> sendPost() async {
-    var url = rt.serverUrl + '/register';
+    var url = rt.Global.serverUrl + '/register';
     var response = await http.post(
       Uri.encodeFull(url),
       body: json.encode({

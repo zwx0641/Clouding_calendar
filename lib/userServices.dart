@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'routes.dart' as rt;
+import 'package:http/http.dart' as http;
 
 //设置user id
 setGlobalUserInfo(user) async {
@@ -39,4 +43,35 @@ setUserEmail(userEmail) async {
 Future<String> getUserEmail() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString('userEmail');
+}
+
+//获取提醒事件
+getReminder() async {
+  print('getReminder');
+  String email = await getUserEmail();
+  var url = rt.Global.serverUrl + '/queryreminder' + '?' + 'email=' + email;
+  var response = await http.post(
+    Uri.encodeFull(url),
+    headers: {
+      "content-type" : "application/json",
+      "accept" : "application/json",
+    }
+  );
+  var data = jsonDecode(response.body.toString());
+  List reminderList = data['data'];
+
+  Map<DateTime, List> eventMap = new Map();
+
+  for (var reminder in reminderList) {
+    DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
+    if (eventMap.containsKey(remindTime)) {
+      eventMap[remindTime].add(reminder['remindText']);
+    } else {
+      List list = new List();
+      list.add(reminder['remindText']);
+      eventMap[remindTime] = list;
+    }
+  }
+
+  rt.Global.events = eventMap;
 }
