@@ -225,8 +225,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 Navigator.popAndPushNamed(context, 'helpRoute');
               },
             ),
-            ListTile(
-              title: Text('Feedbacks'),
+            ListTile( 
               leading: new CircleAvatar(child: new Icon(Icons.feedback),),
               onTap: () {
                 Navigator.popAndPushNamed(context, 'feedbackRoute');

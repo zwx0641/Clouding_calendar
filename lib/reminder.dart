@@ -168,7 +168,7 @@ class _ReminderPageState extends State<ReminderPage> {
                         child: new Opacity(
                           opacity: 0.0,
                           child: CupertinoSwitch(
-                            value: _switchSelected,
+                            value: _switchSelected, onChanged: (bool value) {},
                           ),
                         )
                       )
