@@ -277,7 +277,11 @@ class _ReminderPageState extends State<ReminderPage> {
           }
         );
       } else {
-        Navigator.popAndPushNamed(context, 'homepageRoute');
+        Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+          builder: (BuildContext buildContext) {
+            return MyHomePage();
+          }
+        ), (route) => route == null);
       }
     }
  

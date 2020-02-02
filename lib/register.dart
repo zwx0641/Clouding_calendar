@@ -244,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
               child: new Text('Confirm', style: TextStyle(color: Colors.white),),
               onPressed: () {
                 if (_code == 200) {
-                  var user = json.decode(data['data'].toString());
+                  var user = data['data'];
                   setGlobalUserInfo(user['id']);
                   //设user为login
                   setUserLoginState(true);

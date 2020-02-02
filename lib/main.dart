@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:clouding_calendar/custom_router.dart';
+import 'package:clouding_calendar/local_notification_helper.dart';
 import 'package:clouding_calendar/login.dart';
 import 'package:clouding_calendar/reminder.dart';
 import 'package:clouding_calendar/routes.dart' as prefix0;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -12,6 +15,7 @@ import 'package:clouding_calendar/template.dart';
 import 'routes.dart' as rt;
 import 'package:http/http.dart' as http;
 import 'userServices.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
@@ -30,7 +34,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
       title: 'Table Demo',
       theme: ThemeData(
         primarySwatch: Colors.grey,
@@ -40,7 +43,7 @@ class MyApp extends StatelessWidget {
             future: getUserLoginState(),
              builder:(BuildContext context, AsyncSnapshot<bool> snapshot){
           if (snapshot.data == true){
-                  return MyHomePage();
+            return MyHomePage();
           }
           else{
             return LoginPage();
@@ -70,12 +73,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   List _selectedEvents;
   AnimationController _animationController;
   CalendarController _calendarController;
-  
+  FlutterLocalNotificationsPlugin notifications = new FlutterLocalNotificationsPlugin();
+
   @override
   void initState() {
     super.initState();
     final _selectedDay = DateTime.now();
     getReminder();
+    startTimer();
     /* rt.Global.events = {
       _selectedDay.subtract(Duration(days: 30)): ['Event A0', 'Event B0', 'Event C0'],
       _selectedDay.subtract(Duration(days: 27)): ['Event A1'],
@@ -104,7 +109,50 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     _animationController.forward();
+
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    notifications.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
   }
+
+  Future onSelectNotification(String payload) async => await Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => MyHomePage())
+);
+
+  Future onDidReceiveLocalNotification(
+    int id, String title, String body, String payload) async {
+  // display a dialog with the notification details, tap ok to go to another page
+  showDialog(
+    context: context,
+    builder: (BuildContext context) => new CupertinoAlertDialog(
+        title: new Text(title),
+        content: new Text(body),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: new Text('Ok'),
+            onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop();
+              await Navigator.push(
+                context,
+                new MaterialPageRoute(
+                  builder: (context) => new MyHomePage(),
+                ),
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+
 
   @override
   void dispose() {
@@ -342,7 +390,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   // More advanced TableCalendar configuration (using Builders & Styles)
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
-      locale: 'pl_PL',
+      locale: 'en_US',
       calendarController: _calendarController,
       events: rt.Global.events,
       holidays: _holidays,
@@ -507,4 +555,45 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       Navigator.popAndPushNamed(context, 'loginRoute');
     }
   }
+
+  startTimer() async {
+    
+    Timer timer = new Timer.periodic(new Duration(seconds: 10), (timer) async {
+      String email = await getUserEmail();
+      var url = rt.Global.serverUrl + '/queryreminder?email=' + email;
+      var response =  await http.post(
+        Uri.encodeFull(url),
+        headers: {
+          "content-type" : "application/json",
+          "accept" : "application/json",
+        }
+      );
+      var data = jsonDecode(response.body.toString());
+      List reminderList = data['data'];
+      for (var reminder in reminderList) {
+        DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
+        if (DateTime.now().compareTo(remindTime) == 1) {
+          showOngoingNotification(notifications, title: "Don't forget this!", body: reminder['remindText']);
+          switch (reminder['repetition']) {
+            case 0:
+              url = rt.Global.serverUrl + '/dropreminder?id=' + reminder['id'];
+              response = await http.post(
+                Uri.encodeFull(url),
+                headers: {
+                  "content-type" : "application/json",
+                  "accept" : "application/json",
+                }
+              );
+              break;
+            default:
+          }
+        }
+      }
+    });
+  }
+
+  /* _decideRemind() async{
+    print('decide');
+
+  } */
 }

@@ -47,9 +47,8 @@ Future<String> getUserEmail() async {
 
 //获取提醒事件
 getReminder() async {
-  print('getReminder');
   String email = await getUserEmail();
-  var url = rt.Global.serverUrl + '/queryreminder' + '?' + 'email=' + email;
+  var url = rt.Global.serverUrl + '/queryreminder?email=' + email;
   var response = await http.post(
     Uri.encodeFull(url),
     headers: {
