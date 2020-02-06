@@ -557,8 +557,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   startTimer() async {
-    
+    //设置一个监视器
     Timer timer = new Timer.periodic(new Duration(seconds: 10), (timer) async {
+      //根据用户名找到提醒
       String email = await getUserEmail();
       var url = rt.Global.serverUrl + '/queryreminder?email=' + email;
       var response =  await http.post(
@@ -570,24 +571,32 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       );
       var data = jsonDecode(response.body.toString());
       List reminderList = data['data'];
+      //根据提醒类型进行不同操作
       for (var reminder in reminderList) {
         DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
         if (DateTime.now().compareTo(remindTime) == 1) {
           showOngoingNotification(notifications, title: "Don't forget this!", body: reminder['remindText']);
-          switch (reminder['repetition']) {
-            case 0:
-              url = rt.Global.serverUrl + '/dropreminder?id=' + reminder['id'];
-              response = await http.post(
-                Uri.encodeFull(url),
-                headers: {
-                  "content-type" : "application/json",
-                  "accept" : "application/json",
-                }
-              );
-              break;
-            default:
+          if (reminder['repetition'] == 0) {
+            url = rt.Global.serverUrl + '/dropreminder?id=' + reminder['id'];
+            response = await http.post(
+              Uri.encodeFull(url),
+              headers: {
+                "content-type" : "application/json",
+                "accept" : "application/json",
+              }
+            );
+          } else {
+            url = rt.Global.serverUrl + '/updatereminder?id=' + reminder['id'];
+            response = await http.post(
+              Uri.encodeFull(url),
+              headers: {
+                "content-type" : "application/json",
+                "accept" : "application/json",
+              }
+            );
           }
         }
+        getReminder();
       }
     });
   }
