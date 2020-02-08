@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:clouding_calendar/custom_router.dart';
 import 'package:clouding_calendar/local_notification_helper.dart';
 import 'package:clouding_calendar/login.dart';
@@ -16,6 +16,7 @@ import 'routes.dart' as rt;
 import 'package:http/http.dart' as http;
 import 'userServices.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'showReminder.dart';
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
@@ -36,7 +37,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Table Demo',
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.deepOrange,
+        primaryColor: Colors.white
       ),
       /* home: MyHomePage(title: "ZENO's calendar"), */
       home: FutureBuilder<bool>(
@@ -75,6 +77,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   CalendarController _calendarController;
   FlutterLocalNotificationsPlugin notifications = new FlutterLocalNotificationsPlugin();
 
+  String _reminderId, _remindText, _reminderEmail;
+  DateTime _remindTime;
+  int _repetition;
   @override
   void initState() {
     super.initState();
@@ -273,7 +278,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 Navigator.popAndPushNamed(context, 'helpRoute');
               },
             ),
-            ListTile( 
+            ListTile(
+              title: Text('Feedbacks'),
               leading: new CircleAvatar(child: new Icon(Icons.feedback),),
               onTap: () {
                 Navigator.popAndPushNamed(context, 'feedbackRoute');
@@ -520,7 +526,26 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: ListTile(
                   title: Text(event.toString()),
-                  onTap: () => print('$event tapped!'),
+                  onTap: () {
+                    //POST to get the reminder's detail
+                    getReminderDetail(event.toString());
+                    Navigator.of(context).push(
+                      PageRouteBuilder<Null>(
+                        pageBuilder: (BuildContext context, Animation<double> animation,
+                            Animation<double> secondaryAnimation) {
+                          return AnimatedBuilder(
+                              animation: animation,
+                              builder: (BuildContext context, Widget child) {
+                                return Opacity(
+                                  opacity: animation.value,
+                                  child: MedicineDetails(_reminderId, _reminderEmail, _remindText, _remindTime, _repetition),
+                                );
+                              });
+                        },
+                        transitionDuration: Duration(milliseconds: 500),
+                      ),
+                    );
+                  },
                 ),
               ))
           .toList(),
@@ -597,12 +622,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           }
         }
         getReminder();
+        //sleep(Duration(seconds: 5));
       }
     });
   }
 
-  /* _decideRemind() async{
-    print('decide');
-
-  } */
+  getReminderDetail(String remindText) async {
+    String email = await getUserEmail();
+    var url = rt.Global.serverUrl + '/detailreminder?email=' + email + '&remindText=' + remindText;
+    var response =  await http.post(
+      Uri.encodeFull(url),
+      headers: {
+        "content-type" : "application/json",
+        "accept" : "application/json",
+      }
+    );
+    var data = jsonDecode(response.body.toString());
+    List reminderList = data['data'];
+    for (var reminder in reminderList) {
+      _reminderId = reminder['id'];
+      _reminderEmail = reminder['email'];
+      _remindText = reminder['remindText'];
+      _remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);;
+      _repetition = reminder['repetition'];
+    }
+  }
 }

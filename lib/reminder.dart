@@ -108,7 +108,7 @@ class _ReminderPageState extends State<ReminderPage> {
                       Text('All day', style: TextStyle(fontSize: 18)),
                       CupertinoSwitch(
                         value: _switchSelected,
-                        activeColor: Colors.blue,
+                        activeColor: Colors.deepOrange,
                         onChanged: (value) {
                           setState(() {
                             _switchSelected = value;
