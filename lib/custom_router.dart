@@ -24,7 +24,7 @@ class CustomRoute extends PageRouteBuilder{
     
     // 需要什么效果把注释打开就行了
       // 渐变效果
-     /*  return FadeTransition(
+      return FadeTransition(
         // 从0开始到1
         opacity: Tween(begin: 0.0,end: 1.0)
         .animate(CurvedAnimation(
@@ -34,7 +34,7 @@ class CustomRoute extends PageRouteBuilder{
           curve: Curves.fastOutSlowIn,
         )),
         child: child,
-      ); */
+      );
       
       // 缩放动画效果
       // return ScaleTransition(
@@ -63,7 +63,7 @@ class CustomRoute extends PageRouteBuilder{
       // );
 
       // 左右滑动动画效果
-      return SlideTransition(
+      /* return SlideTransition(
         position: Tween<Offset>(
           // 设置滑动的 X , Y 轴
           begin: Offset(-1.0, 0.0),
@@ -73,7 +73,7 @@ class CustomRoute extends PageRouteBuilder{
           curve: Curves.fastOutSlowIn
         )),
         child: child,
-      );
+      ); */
     }
   );
 }

@@ -1,8 +1,12 @@
+import 'package:clouding_calendar/common/appInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'routes.dart' as rt;
 import 'package:http/http.dart' as http;
+import 'package:clouding_calendar/common/appInfo.dart';
 
+Color _themeColor;
 class MedicineDetails extends StatelessWidget {
   final String id;
   final String remindText;
@@ -14,67 +18,83 @@ class MedicineDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
-          color: Colors.deepOrange,
-        ),
-        centerTitle: true,
-        title: Text(
-          "Reminder Details",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-          ),
-        ),
-        elevation: 0.0,
-      ),
-      body: Container(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              MainSection(id: id, remindText: remindText, email: email),
-              SizedBox(
-                height: 15,
+    
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: AppInfoProvider())
+      ],
+      child: Consumer<AppInfoProvider>(
+        builder: (context, appInfo, _) {
+          String colorKey = appInfo.themeColor;
+          if (rt.Global.themeColorMap[colorKey] != null) {
+            _themeColor = rt.Global.themeColorMap[colorKey];
+          }
+          
+          return Scaffold(
+            resizeToAvoidBottomPadding: false,
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              iconTheme: IconThemeData(
+                color: _themeColor,
               ),
-              ExtendedSection(repetition: repetition, remindTime: remindTime,),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.height * 0.06,
-                  right: MediaQuery.of(context).size.height * 0.06,
-                  top: 25,
+              centerTitle: true,
+              title: Text(
+                "Reminder Details",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
                 ),
-                child: Container(
-                  width: 280,
-                  height: 70,
-                  child: FlatButton(
-                    color: Colors.deepOrange,
-                    shape: StadiumBorder(),
-                    onPressed: () {
-                      deleteReminder(id);
-                      Navigator.of(context).popAndPushNamed('homepageRoute');
-                    },
-                    child: Center(
-                      child: Text(
-                        "Delete Reminder",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
+              ),
+              elevation: 0.0,
+            ),
+            body: Container(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    MainSection(id: id, remindText: remindText, email: email),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    ExtendedSection(repetition: repetition, remindTime: remindTime,),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.height * 0.06,
+                        right: MediaQuery.of(context).size.height * 0.06,
+                        top: 25,
+                      ),
+                      child: Container(
+                        width: 280,
+                        height: 70,
+                        child: FlatButton(
+                          color: _themeColor,
+                          shape: StadiumBorder(),
+                          onPressed: () {
+                            deleteReminder(id);
+                            Navigator.of(context).popAndPushNamed('homepageRoute');
+                          },
+                          child: Center(
+                            child: Text(
+                              "Delete Reminder",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }
       ),
     );
   }
@@ -107,7 +127,7 @@ class MainSection extends StatelessWidget {
       tag: id + remindText,
       child: Icon(
         Icons.alarm,
-        color: Colors.deepOrange,
+        color: _themeColor,
         size: size,
       ),
     );
@@ -173,7 +193,7 @@ class MainInfoTab extends StatelessWidget {
             fieldInfo,
             style: TextStyle(
                 fontSize: 17,
-                color: Colors.deepOrange,
+                color: _themeColor,
                 fontWeight: FontWeight.bold),
           ),
         ],

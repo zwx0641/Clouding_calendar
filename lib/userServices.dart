@@ -61,16 +61,19 @@ getReminder() async {
 
   Map<DateTime, List> eventMap = new Map();
 
-  for (var reminder in reminderList) {
-    DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
-    if (eventMap.containsKey(remindTime)) {
-      eventMap[remindTime].add(reminder['remindText']);
-    } else {
-      List list = new List();
-      list.add(reminder['remindText']);
-      eventMap[remindTime] = list;
+  if (reminderList?.isNotEmpty) {
+    for (var reminder in reminderList) {
+      DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
+      if (eventMap.containsKey(remindTime)) {
+        eventMap[remindTime].add(reminder['remindText']);
+      } else {
+        List list = new List();
+        list.add(reminder['remindText']);
+        eventMap[remindTime] = list;
+      }
     }
   }
+  
 
   rt.Global.events = eventMap;
 }

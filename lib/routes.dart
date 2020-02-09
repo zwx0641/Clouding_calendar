@@ -26,5 +26,24 @@ class Global {
     3 : 'Every month',
     4 : 'Every year'
   };
+  static Map<String, Color> themeColorMap = {
+  'gray': Colors.grey,
+  'blue': Colors.blue,
+  'blueAccent': Colors.blueAccent,
+  'cyan': Colors.cyan,
+  'deepPurple': Colors.purple,
+  'deepPurpleAccent': Colors.deepPurpleAccent,
+  'orange': Colors.orange,
+  'green': Colors.green,
+  'indigo': Colors.indigo,
+  'indigoAccent': Colors.indigoAccent,
+  'deepOrange': Colors.deepOrange,
+  'purple': Colors.purple,
+  'pink': Colors.pink,
+  'red': Colors.red,
+  'teal': Colors.teal,
+  'black': Colors.black,
+  };
+  static String key_theme_color = 'deepOrange';
 }
 

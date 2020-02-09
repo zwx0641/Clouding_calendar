@@ -1,17 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:clouding_calendar/common/appInfo.dart';
 import 'package:clouding_calendar/custom_router.dart';
+import 'package:clouding_calendar/feedback.dart';
+import 'package:clouding_calendar/help.dart';
 import 'package:clouding_calendar/local_notification_helper.dart';
 import 'package:clouding_calendar/login.dart';
-import 'package:clouding_calendar/login_page.dart';
 import 'package:clouding_calendar/reminder.dart';
-import 'package:clouding_calendar/routes.dart' as prefix0;
+import 'package:clouding_calendar/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:clouding_calendar/template.dart';
+import 'common/Sphelper.dart';
 import 'routes.dart' as rt;
 import 'package:http/http.dart' as http;
 import 'userServices.dart';
@@ -34,8 +38,46 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Table Demo',
+    Color _themeColor;
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: AppInfoProvider())
+      ],
+      child: Consumer<AppInfoProvider>(
+        builder: (context, appInfo, _) {
+          String colorKey = appInfo.themeColor;
+          if (rt.Global.themeColorMap[colorKey] != null) {
+            _themeColor = rt.Global.themeColorMap[colorKey];
+          }
+
+          return MaterialApp(
+            theme: ThemeData(
+              primarySwatch: _themeColor,
+              primaryColor: _themeColor,
+              accentColor: _themeColor,
+              indicatorColor: Colors.white
+            ),
+            home: FutureBuilder<bool>(
+                  future: getUserLoginState(),
+                    builder:(BuildContext context, AsyncSnapshot<bool> snapshot){
+                if (snapshot.data == true){
+                  return MyHomePage();
+                }
+                else{
+                  return LoginPage();
+                }
+              }
+            ),
+            routes: rt.routes,
+          );
+        },
+      ),
+    );
+
+
+/*     return MaterialApp(
+      title: 'Zalendar',
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
         primaryColor: Colors.white
@@ -52,8 +94,8 @@ class MyApp extends StatelessWidget {
           }
         }
       ),
-      routes: prefix0.routes,
-    );
+      routes: rt.routes,
+    ); */
   }
 }
 
@@ -84,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     final _selectedDay = DateTime.now();
+    _initAsync();
     getReminder();
     startTimer();
     /* rt.Global.events = {
@@ -126,10 +169,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         onSelectNotification: onSelectNotification);
   }
 
+  void _initAsync() async {
+    await SpHelper.getInstance();
+    String colorKey = SpHelper.getString(rt.Global.key_theme_color, defValue: 'deepOrange');
+    // 设置初始化主题颜色
+    Provider.of<AppInfoProvider>(context, listen: false).setTheme(colorKey);
+  }
+
   Future onSelectNotification(String payload) async => await Navigator.push(
-  context,
-  MaterialPageRoute(builder: (context) => MyHomePage())
-);
+    context,
+    MaterialPageRoute(builder: (context) => MyHomePage())
+  );
 
   Future onDidReceiveLocalNotification(
     int id, String title, String body, String payload) async {
@@ -206,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   // 点击按钮更换视图
                   switch (action) {
                       case 'A': {
-                        Navigator.pop(context);
+                        Navigator.push(context, new CustomRoute(SettingPage()));
                       }
                       break;
                   }
@@ -265,24 +315,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               title: Text('Settings'),
               leading: new CircleAvatar(child: new Icon(Icons.settings),),
               onTap: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.week); 
-                });
-                Navigator.pop(context);
+                Navigator.push(context, new CustomRoute(SettingPage()));
               },
             ),
             ListTile(
               title: Text('Help'),
               leading: new CircleAvatar(child: new Icon(Icons.help),),
               onTap: () {
-                Navigator.popAndPushNamed(context, 'helpRoute');
+                Navigator.push(context, new CustomRoute(HelpPage()));
               },
             ),
             ListTile(
               title: Text('Feedbacks'),
               leading: new CircleAvatar(child: new Icon(Icons.feedback),),
               onTap: () {
-                Navigator.popAndPushNamed(context, 'feedbackRoute');
+                Navigator.push(context, new CustomRoute(FeedbackPage()));
               },
             ),
             ListTile(
@@ -597,33 +644,38 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       var data = jsonDecode(response.body.toString());
       List reminderList = data['data'];
       //根据提醒类型进行不同操作
-      for (var reminder in reminderList) {
-        DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
-        if (DateTime.now().compareTo(remindTime) == 1) {
-          showOngoingNotification(notifications, title: "Don't forget this!", body: reminder['remindText']);
-          if (reminder['repetition'] == 0) {
-            url = rt.Global.serverUrl + '/dropreminder?id=' + reminder['id'];
-            response = await http.post(
-              Uri.encodeFull(url),
-              headers: {
-                "content-type" : "application/json",
-                "accept" : "application/json",
-              }
-            );
-          } else {
-            url = rt.Global.serverUrl + '/updatereminder?id=' + reminder['id'];
-            response = await http.post(
-              Uri.encodeFull(url),
-              headers: {
-                "content-type" : "application/json",
-                "accept" : "application/json",
-              }
-            );
+      
+      if (reminderList?.isNotEmpty) {
+        for (var reminder in reminderList) {
+          DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
+          if (DateTime.now().compareTo(remindTime) == 1) {
+            showOngoingNotification(notifications, title: "Don't forget this!", body: reminder['remindText']);
+            if (reminder['repetition'] == 0) {
+              url = rt.Global.serverUrl + '/dropreminder?id=' + reminder['id'];
+              response = await http.post(
+                Uri.encodeFull(url),
+                headers: {
+                  "content-type" : "application/json",
+                  "accept" : "application/json",
+                }
+              );
+            } else {
+              url = rt.Global.serverUrl + '/updatereminder?id=' + reminder['id'];
+              response = await http.post(
+                Uri.encodeFull(url),
+                headers: {
+                  "content-type" : "application/json",
+                  "accept" : "application/json",
+                }
+              );
+            }
           }
+          getReminder();
+          //sleep(Duration(seconds: 5));
         }
-        getReminder();
-        //sleep(Duration(seconds: 5));
       }
+
+
     });
   }
 

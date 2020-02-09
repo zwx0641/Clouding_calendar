@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:clouding_calendar/custom_router.dart';
 import 'package:clouding_calendar/register.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
 import 'package:http/http.dart' as http;
 import 'routes.dart' as rt;
@@ -241,41 +242,51 @@ class _LoginPageState extends State<LoginPage> {
     var data = jsonDecode(response.body.toString());
     _hintMessage = data['msg'];
     _code = data['status'];
-    
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                SizedBox(height: 15),
-                Text(_hintMessage, style: TextStyle(fontSize: 20),),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text('Confirm', style: TextStyle(color: Colors.white),),
-              onPressed: () {
-                if (_code == 200) {
-                  var user = data['data'];
+
+    if (_code == 200) {
+      var user = data['data'];
              
-                  //存id到本地储存
-                  setGlobalUserInfo(user['id']);
-                  setUserEmail(user['email']);
-                  Navigator.popAndPushNamed(context, 'homepageRoute');
-                } else {
+      //存id到本地储存
+      setGlobalUserInfo(user['id']);
+      setUserEmail(user['email']);
+      Fluttertoast.showToast(
+        msg: 'Logging you in...',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.grey,
+        textColor: Colors.white,
+        fontSize: 16.0 
+      );
+      Navigator.popAndPushNamed(context, 'homepageRoute');
+    } else {
+        return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  SizedBox(height: 15),
+                  Text(_hintMessage, style: TextStyle(fontSize: 17),),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('Confirm', style: TextStyle(color: Colors.white),),
+                onPressed: () {
+                  
                   Navigator.of(context).pop();
-                  }
-                },
-              color: Colors.blueGrey,
-            )
-          ],
-        );
-      }
-    );
+                    
+                  },
+                color: Colors.blueGrey,
+              )
+            ],
+          );
+        }
+      );
+    }
   }
 }
 
