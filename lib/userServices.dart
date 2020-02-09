@@ -63,7 +63,8 @@ getReminder() async {
 
   if (reminderList?.isNotEmpty) {
     for (var reminder in reminderList) {
-      DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
+      DateTime remindTimeSpecific = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
+      DateTime remindTime = new DateTime(remindTimeSpecific.year, remindTimeSpecific.month, remindTimeSpecific.day);
       if (eventMap.containsKey(remindTime)) {
         eventMap[remindTime].add(reminder['remindText']);
       } else {
@@ -73,7 +74,5 @@ getReminder() async {
       }
     }
   }
-  
-
   rt.Global.events = eventMap;
 }

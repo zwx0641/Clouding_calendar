@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:clouding_calendar/custom_router.dart';
+import 'package:clouding_calendar/main.dart';
 import 'package:clouding_calendar/register.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -253,11 +254,14 @@ class _LoginPageState extends State<LoginPage> {
         msg: 'Logging you in...',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.grey,
-        textColor: Colors.white,
-        fontSize: 16.0 
+        
       );
-      Navigator.popAndPushNamed(context, 'homepageRoute');
+      Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+        builder: (BuildContext buildContext) {
+          return MyHomePage();
+        }
+      ), (route) => route == null);
+      
     } else {
         return showDialog(
         context: context,

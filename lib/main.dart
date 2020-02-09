@@ -576,22 +576,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   onTap: () {
                     //POST to get the reminder's detail
                     getReminderDetail(event.toString());
-                    Navigator.of(context).push(
-                      PageRouteBuilder<Null>(
-                        pageBuilder: (BuildContext context, Animation<double> animation,
-                            Animation<double> secondaryAnimation) {
-                          return AnimatedBuilder(
-                              animation: animation,
-                              builder: (BuildContext context, Widget child) {
-                                return Opacity(
-                                  opacity: animation.value,
-                                  child: MedicineDetails(_reminderId, _reminderEmail, _remindText, _remindTime, _repetition),
-                                );
-                              });
-                        },
-                        transitionDuration: Duration(milliseconds: 500),
-                      ),
-                    );
+                    
                   },
                 ),
               ))
@@ -648,6 +633,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       if (reminderList?.isNotEmpty) {
         for (var reminder in reminderList) {
           DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
+          DateTime now = DateTime.now();
           if (DateTime.now().compareTo(remindTime) == 1) {
             showOngoingNotification(notifications, title: "Don't forget this!", body: reminder['remindText']);
             if (reminder['repetition'] == 0) {
@@ -671,11 +657,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             }
           }
           getReminder();
-          //sleep(Duration(seconds: 5));
         }
       }
-
-
     });
   }
 
@@ -691,12 +674,32 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
     var data = jsonDecode(response.body.toString());
     List reminderList = data['data'];
-    for (var reminder in reminderList) {
-      _reminderId = reminder['id'];
-      _reminderEmail = reminder['email'];
-      _remindText = reminder['remindText'];
-      _remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);;
-      _repetition = reminder['repetition'];
+
+    if (reminderList?.isNotEmpty) {
+      for (var reminder in reminderList) {
+        _reminderId = reminder['id'];
+        _reminderEmail = reminder['email'];
+        _remindText = reminder['remindText'];
+        _remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);;
+        _repetition = reminder['repetition'];
+      }
     }
+    
+    Navigator.of(context).push(
+      PageRouteBuilder<Null>(
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return AnimatedBuilder(
+              animation: animation,
+              builder: (BuildContext context, Widget child) {
+                return Opacity(
+                  opacity: animation.value,
+                  child: MedicineDetails(_reminderId, _reminderEmail, _remindText, _remindTime, _repetition),
+                );
+              });
+        },
+        transitionDuration: Duration(milliseconds: 500),
+      ),
+    );
   }
 }

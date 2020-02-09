@@ -206,21 +206,21 @@ class _ReminderPageState extends State<ReminderPage> {
       });
     }
 
-    _showTimePicker() {
-      showTimePicker(
-        context: context,
-        initialTime: _selectedTime
-      ).then((selectedValue) {
-        setState(() {
-          //将选中的值传递出来
-          if (selectedValue != null) {
-            this._selectedTime = selectedValue;
-          }
-        });
-      }).catchError((error) {
-        print(error);
+  _showTimePicker() {
+    showTimePicker(
+      context: context,
+      initialTime: _selectedTime
+    ).then((selectedValue) {
+      setState(() {
+        //将选中的值传递出来
+        if (selectedValue != null) {
+          this._selectedTime = selectedValue;
+        }
       });
-    }
+    }).catchError((error) {
+      print(error);
+    });
+  }
 
 
 
@@ -229,7 +229,7 @@ class _ReminderPageState extends State<ReminderPage> {
       //Record remind time
       final dt = DateTime(_selectedDate.year, _selectedDate.month, 
                           _selectedDate.day, _selectedTime.hour, _selectedTime.minute);
-      final format = new DateFormat('yyyy-MM-dd hh:mm:ss');
+      final format = new DateFormat('yyyy-MM-dd HH:mm:ss');
       
       String _remindTime = format.format(dt);
       //Which user sets the reminder
