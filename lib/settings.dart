@@ -42,6 +42,7 @@ class _SettingPageState extends State<SettingPage> {
       body: ListView(
         children: <Widget>[
           ExpansionTile(
+            //选择主题
             leading: Icon(Icons.color_lens),
             title: Text('Themes'),
             initiallyExpanded: true,
@@ -74,6 +75,7 @@ class _SettingPageState extends State<SettingPage> {
             ],
           ),
           ListTile(
+            //选择语言
             leading: Icon(Icons.language),
             title: Text('Multi languages'),
             trailing: Row(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:clouding_calendar/common/appInfo.dart';
 import 'package:clouding_calendar/custom_router.dart';
+import 'package:clouding_calendar/event.dart';
 import 'package:clouding_calendar/feedback.dart';
 import 'package:clouding_calendar/help.dart';
 import 'package:clouding_calendar/local_notification_helper.dart';
@@ -276,7 +277,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               leading: new CircleAvatar(child: new Icon(Icons.today),),
               onTap: () {
                 setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.month); 
+                  _calendarController.setCalendarFormat(CalendarFormat.month);
                 });
                 Navigator.pop(context);
               },
@@ -387,7 +388,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       leading: new Icon(Icons.event, color: Colors.white),
                       title: new Text('Event', style: TextStyle(color: Colors.white)),
                       onTap: () {
-                        Navigator.of(context).push(new CustomRoute(new ReminderPage()));
+                        Navigator.of(context).push(new CustomRoute(new EventPage()));
                       },
                     ),
                     //添加提醒

@@ -18,6 +18,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     super.initState();
   }
 
+  //图片，文字，输入框，按钮
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,6 +166,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     );
   }
 
+  //点击发送反馈，然后打开邮件app写邮件
   _sendEmail() async {
     String _feedbacker = await getUserEmail();
 
