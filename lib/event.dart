@@ -1,10 +1,18 @@
+import 'dart:convert';
+
 import 'package:clouding_calendar/main.dart';
+import 'package:clouding_calendar/userServices.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:clouding_calendar/routes.dart' as rt;
+import 'package:http/http.dart' as http;
 
-String _eventName;
-String _location;
+import 'common/app_theme.dart';
+
+String _eventName, _location, _remark;
 DateTime _selectedFromDate;
 TimeOfDay _selectedFromTime;
 DateTime _selectedEndDate;
@@ -18,7 +26,7 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
   TextEditingController nameController;
-  TextEditingController dosageController;
+  TextEditingController locationController;
  
   bool _is0Selected = false;
   bool _is1Selected = false;
@@ -31,13 +39,13 @@ class _EventPageState extends State<EventPage> {
   void dispose() {
     super.dispose();
     nameController.dispose();
-    dosageController.dispose();
+    locationController.dispose();
   }
 
   void initState() {
     super.initState();
     nameController = TextEditingController();
-    dosageController = TextEditingController();
+    locationController = TextEditingController();
     _scaffoldKey = GlobalKey<ScaffoldState>();
     _selectedFromDate = DateTime.now();
     _selectedFromTime = TimeOfDay(hour: 0, minute: 00);
@@ -143,7 +151,6 @@ class _EventPageState extends State<EventPage> {
                 isRequired: true,
               ),
               TextFormField(
-                maxLength: 12,
                 style: TextStyle(
                   fontSize: 16,
                 ),
@@ -163,7 +170,7 @@ class _EventPageState extends State<EventPage> {
                 isRequired: false,
               ),
               TextFormField(
-                controller: dosageController,
+                controller: locationController,
                 keyboardType: TextInputType.text,
                 style: TextStyle(
                   fontSize: 16,
@@ -178,6 +185,11 @@ class _EventPageState extends State<EventPage> {
                   });
                 },
               ),
+              PanelTitle(
+                title: "remark",
+                isRequired: false,
+              ),
+              _buildComposer(),
               SizedBox(
                 height: 15,
               ),
@@ -280,14 +292,7 @@ class _EventPageState extends State<EventPage> {
                       } else if (_repetition == -1) {
                         showErrorWidget('Please select whether to repeat');
                       } else {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return MyHomePage();
-                            },
-                          ),
-                        );
+                        _saveEvent();
                       }
                     },
                   ),
@@ -298,6 +303,124 @@ class _EventPageState extends State<EventPage> {
         ),
       ),
     );
+  }
+
+    Widget _buildComposer() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.8),
+                offset: const Offset(4, 4),
+                blurRadius: 8),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(25),
+          child: Container(
+            padding: const EdgeInsets.all(4.0),
+            constraints: const BoxConstraints(minHeight: 80, maxHeight: 160),
+            color: AppTheme.white,
+            child: SingleChildScrollView(
+              padding:
+                  const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
+              child: TextField(
+                maxLines: null,
+                onChanged: (String txt) {
+                  _remark = txt;
+                },
+                style: TextStyle(
+                  fontFamily: AppTheme.fontName,
+                  fontSize: 16,
+                  color: AppTheme.dark_grey,
+                ),
+                cursorColor: Colors.blue,
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Enter your remark...'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+    // 保存提醒事件到数据库
+  _saveEvent() async {
+    //Record remind time
+    final dft = DateTime(_selectedFromDate.year, _selectedFromDate.month, 
+                        _selectedFromDate.day, _selectedFromTime.hour, _selectedFromTime.minute);
+    final det = DateTime(_selectedEndDate.year, _selectedEndDate.month, 
+                        _selectedEndDate.day, _selectedEndTime.hour, _selectedEndTime.minute);
+    final format = new DateFormat('yyyy-MM-dd HH:mm:ss');
+    
+    String _fromTime = format.format(dft);
+    String _endTime = format.format(det);
+    //Which user sets the reminder
+    String email = await getUserEmail();
+    _fromTime = _fromTime.replaceAll(' ', 'T');
+    _endTime = _endTime.replaceAll(' ', 'T');
+    var url = rt.Global.serverUrl + '/saveevent';
+    var response = await http.post(
+      Uri.encodeFull(url),
+      body: json.encode({
+          'email' : email,
+          'eventName' : _eventName,
+          'location' : _location,
+          'remark' : _remark,
+          'fromTime' : _fromTime,
+          'endTime' : _endTime,
+          'repetition' : _repetition
+        }
+      ),
+      headers: {
+        "content-type" : "application/json",
+        "accept" : "application/json",
+      }
+    );
+    var data = jsonDecode(response.body.toString());
+    var code = data['status'];
+    if (code != 200) {
+      return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  SizedBox(height: 15),
+                  Text('Failed to set a reminder', style: TextStyle(fontSize: 20),),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new MaterialButton(
+                child: new Text('Confirm', style: TextStyle(color: Colors.white),),
+                onPressed: () {Navigator.of(context).pop();},
+                color: Colors.blueGrey,
+              )
+            ],
+          );
+        }
+      );
+    } else {
+      Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+        builder: (BuildContext buildContext) {
+          return MyHomePage();
+        }
+      ), (route) => route == null);
+      Fluttertoast.showToast(
+        msg: 'Event saved',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER
+      );
+    }
   }
 
   Future<Widget> showErrorWidget(String hintMsg) {
