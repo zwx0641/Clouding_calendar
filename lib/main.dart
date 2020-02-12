@@ -172,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   void _initAsync() async {
     await SpHelper.getInstance();
-    String colorKey = SpHelper.getString(rt.Global.key_theme_color, defValue: 'deepOrange');
+    String colorKey = SpHelper.getString(rt.Global.key_theme_color, defValue: 'purple');
     // 设置初始化主题颜色
     Provider.of<AppInfoProvider>(context, listen: false).setTheme(colorKey);
   }
@@ -402,7 +402,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   ],
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.deepOrange,
+                  color: Colors.purple[100],
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(25),
                     topRight: Radius.circular(25)
@@ -424,15 +424,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       holidays: _holidays,
       startingDayOfWeek: StartingDayOfWeek.monday,
       calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
+        selectedColor: Colors.purple[200],
+        todayColor: Colors.purple[100],
         markersColor: Colors.brown[700],
         outsideDaysVisible: false,
       ),
       headerStyle: HeaderStyle(
         formatButtonTextStyle: TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
         formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
+          color: Colors.purple[200],
           borderRadius: BorderRadius.circular(16.0),
         ),
       ),
@@ -475,7 +475,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             child: Container(
               margin: const EdgeInsets.all(4.0),
               padding: const EdgeInsets.only(top: 5.0, left: 6.0),
-              color: Colors.deepOrange[300],
+              color: Colors.purple[300],
               width: 100,
               height: 100,
               child: Text(

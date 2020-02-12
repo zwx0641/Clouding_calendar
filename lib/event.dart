@@ -256,7 +256,7 @@ class _EventPageState extends State<EventPage> {
                   width: 200,
                   height: 60,
                   child: FlatButton(
-                    color: Colors.deepOrange,
+                    color: Colors.purple[100],
                     shape: StadiumBorder(),
                     child: Center(
                       child: Text(
@@ -289,8 +289,6 @@ class _EventPageState extends State<EventPage> {
                           ),
                         );
                       }
-
-                      
                     },
                   ),
                 ),
@@ -396,7 +394,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             FlatButton(
-              color: Colors.deepOrange,
+              color: Colors.purple[100],
               shape: StadiumBorder(),
               onPressed: () {
                 _selectDate(context);
@@ -418,7 +416,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
               ),
             ),
             FlatButton(
-              color: Colors.deepOrange,
+              color: Colors.purple[100],
               shape: StadiumBorder(),
               onPressed: () {
                 _selectTime(context);
@@ -480,7 +478,7 @@ class RepeatTypeColumn extends StatelessWidget {
             width: 68,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: isSelected ? Colors.deepOrange : Colors.white,
+              color: isSelected ? Colors.purple[100] : Colors.white,
             ),
             child: Center(
               child: Padding(
@@ -488,7 +486,7 @@ class RepeatTypeColumn extends StatelessWidget {
                 child: Icon(
                   iconValue,
                   size: 58,
-                  color: isSelected ? Colors.white : Colors.deepOrange,
+                  color: isSelected ? Colors.white : Colors.purple[100],
                 ),
               ),
             ),
@@ -499,7 +497,7 @@ class RepeatTypeColumn extends StatelessWidget {
               width: 63,
               height: 30,
               decoration: BoxDecoration(
-                color: isSelected ? Colors.deepOrange : Colors.transparent,
+                color: isSelected ? Colors.purple[100] : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
@@ -507,7 +505,7 @@ class RepeatTypeColumn extends StatelessWidget {
                   name,
                   style: TextStyle(
                     fontSize: 12,
-                    color: isSelected ? Colors.white : Colors.deepOrange,
+                    color: isSelected ? Colors.white : Colors.purple[100],
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -542,7 +540,7 @@ class PanelTitle extends StatelessWidget {
           ),
           TextSpan(
             text: isRequired ? " *" : "",
-            style: TextStyle(fontSize: 14, color: Colors.deepOrange),
+            style: TextStyle(fontSize: 14, color: Colors.purple[100]),
           ),
         ]),
       ),

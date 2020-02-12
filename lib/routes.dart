@@ -29,21 +29,21 @@ class Global {
   static Map<String, Color> themeColorMap = {
   'gray': Colors.grey,
   'blue': Colors.blue,
-  'blueAccent': Colors.blueAccent,
+  'blueGrey': Colors.blueGrey,
   'cyan': Colors.cyan,
-  'deepPurple': Colors.purple,
-  'deepPurpleAccent': Colors.deepPurpleAccent,
+  'purple': Colors.purple,
+  'deepPurple': Colors.deepPurple,
   'orange': Colors.orange,
   'green': Colors.green,
   'indigo': Colors.indigo,
-  'indigoAccent': Colors.indigoAccent,
+  'amber': Colors.amber,
   'deepOrange': Colors.deepOrange,
   'purple': Colors.purple,
   'pink': Colors.pink,
   'red': Colors.red,
   'teal': Colors.teal,
-  'black': Colors.black,
+  'lime': Colors.lime,
   };
-  static String key_theme_color = 'deepOrange';
+  static String key_theme_color = 'purple';
 }
 

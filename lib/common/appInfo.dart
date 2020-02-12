@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppInfoProvider with ChangeNotifier {
-  String _themeColor = 'deepOrange';
+  String _themeColor = 'purple';
 
   String get themeColor => _themeColor;
 

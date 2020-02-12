@@ -15,15 +15,22 @@ class ReminderPage extends StatefulWidget {
 }
 
 class _ReminderPageState extends State<ReminderPage> {
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay(hour: 0, minute: 0);
+  DateTime _selectedDate;
+  TimeOfDay _selectedTime;
   bool _switchSelected = true;
   bool _invisible = true;
   String _reminderTitle;
   List<String> _repeatArray = ['Does not repeat', 'Everyday', 'Every week', 'Every month', 'Every year'];
   String _repeatsMsg = 'Repeats';
-  int _repeatTimes = 0;
+  int _repeatTimes;
   List<Widget> tiles = [];
+
+  void initState() { 
+    super.initState();
+    _repeatTimes = -1;
+    _selectedDate = DateTime.now();
+    _selectedTime = TimeOfDay(hour: 0, minute: 0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +68,32 @@ class _ReminderPageState extends State<ReminderPage> {
       }
     }
 
+    Future<Widget> _showErrorWidget(String hintMsg) {
+      return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  SizedBox(height: 15),
+                  Text(hintMsg, style: TextStyle(fontSize: 17),),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('Confirm', style: TextStyle(color: Colors.white),),
+                onPressed: () {Navigator.of(context).pop(); },
+                color: Colors.blueGrey,
+              )
+            ],
+          );
+        }
+      );
+    }
+
     //提醒重复几次
 
     return new Scaffold(
@@ -70,8 +103,13 @@ class _ReminderPageState extends State<ReminderPage> {
           new IconButton(
             icon: Icon(Icons.save),
             onPressed: () {
-              
-              return _saveReminder();
+              if (_reminderTitle == null) {
+                _showErrorWidget('Please enter reminder name');
+              } else if (_repeatTimes == -1) {
+                _showErrorWidget('Please select whether to repeat');
+              } else {
+                return _saveReminder();
+              }
             }
           )
         ],
@@ -108,7 +146,7 @@ class _ReminderPageState extends State<ReminderPage> {
                       Text('All day', style: TextStyle(fontSize: 18)),
                       CupertinoSwitch(
                         value: _switchSelected,
-                        activeColor: Colors.deepOrange,
+                        activeColor: Colors.purple[100],
                         onChanged: (value) {
                           setState(() {
                             _switchSelected = value;
