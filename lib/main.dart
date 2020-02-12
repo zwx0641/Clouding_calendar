@@ -128,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.initState();
     final _selectedDay = DateTime.now();
     _initAsync();
-    getReminder();
+    getReminderEvent();
     startTimer();
     /* rt.Global.events = {
       _selectedDay.subtract(Duration(days: 30)): ['Event A0', 'Event B0', 'Event C0'],
@@ -657,7 +657,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               );
             }
           }
-          getReminder();
+          getReminderEvent();
         }
       }
     });
