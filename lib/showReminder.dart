@@ -4,10 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'routes.dart' as rt;
 import 'package:http/http.dart' as http;
-import 'package:clouding_calendar/common/appInfo.dart';
 
 Color _themeColor;
-class MedicineDetails extends StatelessWidget {
+class ReminderDetails extends StatelessWidget {
   final String id;
   final String remindText;
   final DateTime remindTime;
@@ -15,7 +14,7 @@ class MedicineDetails extends StatelessWidget {
   final String email;
 
   //参数，提醒的id，email，内容，时间，重复类型
-  MedicineDetails(this.id, this.email, this.remindText, this.remindTime, this.repetition);
+  ReminderDetails(this.id, this.email, this.remindText, this.remindTime, this.repetition);
 
   @override
   Widget build(BuildContext context) {

@@ -64,13 +64,40 @@ getReminderEvent() async {
   if (reminderList?.isNotEmpty) {
     for (var reminder in reminderList) {
       DateTime remindTimeSpecific = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
-      DateTime remindTime = new DateTime(remindTimeSpecific.year, remindTimeSpecific.month, remindTimeSpecific.day);
+      DateTime remindTime = new DateTime(remindTimeSpecific.year, remindTimeSpecific.month, 
+                                        remindTimeSpecific.day);
       if (eventMap.containsKey(remindTime)) {
         eventMap[remindTime].add(reminder['remindText']);
       } else {
         List list = new List();
         list.add(reminder['remindText']);
         eventMap[remindTime] = list;
+      }
+    }
+  }
+
+  url = rt.Global.serverUrl + '/queryevent?email=' + email;
+  response = await http.post(
+    Uri.encodeFull(url),
+    headers: {
+      'content-type' : 'application/json',
+      "accept" : "application/json",
+    }
+  );
+  data = jsonDecode(response.body.toString());
+  List eventList = data['data'];
+
+  if (eventList?.isNotEmpty) {
+    for (var event in eventList) {
+      DateTime fromTimeSpecific = DateTime.fromMillisecondsSinceEpoch(event['fromTime']);
+      DateTime fromTime = new DateTime(fromTimeSpecific.year, fromTimeSpecific.month,
+                                        fromTimeSpecific.day);
+      if (eventMap.containsKey(fromTime)) {
+        eventMap[fromTime].add(event['eventName']);
+      } else {
+        List list = new List();
+        list.add(event['eventName']);
+        eventMap[fromTime] = list;
       }
     }
   }

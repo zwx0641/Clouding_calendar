@@ -74,10 +74,35 @@ class _SettingPageState extends State<SettingPage> {
               )
             ],
           ),
-          ListTile(
+          ExpansionTile(
             //选择语言
             leading: Icon(Icons.language),
-            title: Text('Multi languages'),
+            title: Text('Set calendar form'),
+            initiallyExpanded: false,
+            children: <Widget>[
+              GestureDetector(
+                child: Container(
+                  width: 270,
+                  height: 40,
+                  child: Text('Square', style: TextStyle(fontSize: 20),),
+                ),
+                onTap: () {
+                  rt.Global.calendarType = 1;
+                  Navigator.of(context).popAndPushNamed('homepageRoute');
+                },
+              ),
+              GestureDetector(
+                child: Container(
+                  width: 270,
+                  height: 40,
+                  child: Text('Circle', style: TextStyle(fontSize: 20),),
+                ),
+                onTap: () {
+                  rt.Global.calendarType = 2;
+                  Navigator.of(context).popAndPushNamed('homepageRoute');
+                },
+              ),
+            ],
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[

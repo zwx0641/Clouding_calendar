@@ -45,5 +45,6 @@ class Global {
   'lime': Colors.lime,
   };
   static String key_theme_color = 'purple';
+  static int calendarType = 1;
 }
 
