@@ -9,6 +9,7 @@ import 'package:clouding_calendar/local_notification_helper.dart';
 import 'package:clouding_calendar/login.dart';
 import 'package:clouding_calendar/reminder.dart';
 import 'package:clouding_calendar/settings.dart';
+import 'package:clouding_calendar/timeline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -267,13 +268,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               },
             ),
             ListTile(
-              title: Text('Search'),
-              leading: new CircleAvatar(child: new Icon(Icons.search),),
+              title: Text('Agenda'),
+              leading: new CircleAvatar(child: new Icon(Icons.view_agenda),),
               onTap: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.week); 
-                });
-                Navigator.pop(context);
+                Navigator.push(context, new CustomRoute(TimelinePage(title: 'Agenda',)));
               },
             ),
             ListTile(

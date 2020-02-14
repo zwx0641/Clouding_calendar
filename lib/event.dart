@@ -18,6 +18,7 @@ TimeOfDay _selectedFromTime;
 DateTime _selectedEndDate;
 TimeOfDay _selectedEndTime;
 int _repetition;
+int _eventType;
 
 class EventPage extends StatefulWidget {
   @override
@@ -33,6 +34,9 @@ class _EventPageState extends State<EventPage> {
   bool _is2Selected = false;
   bool _is3Selected = false;
   bool _is4Selected = false;
+  bool _isWSelected = false;
+  bool _isSSelected = false;
+  bool _isRSelected = false;
 
   GlobalKey<ScaffoldState> _scaffoldKey;
 
@@ -52,6 +56,7 @@ class _EventPageState extends State<EventPage> {
     _selectedEndDate = DateTime.now();
     _selectedEndTime = TimeOfDay(hour: 0, minute: 00);
     _repetition = -1;
+    _eventType = -1;
   }
 
   // 判断哪种重复被选择
@@ -115,6 +120,47 @@ class _EventPageState extends State<EventPage> {
       }
     });
   }
+
+  //event type控制
+  void _handleWChanged(bool value) {
+    setState(() {
+      if (_isSSelected || _isRSelected) {
+        _isRSelected = _isSSelected = false;
+        _isWSelected = true;
+        _eventType = 1;
+      } else {
+        _isWSelected = value;
+        if (!value) {_eventType = -1;} else {_eventType = 1;}
+      }
+    });
+  }
+
+  void _handleSChanged(bool value) {
+    setState(() {
+      if (_isWSelected || _isRSelected) {
+        _isRSelected = _isWSelected = false;
+        _isSSelected = true;
+        _eventType = 2;
+      } else {
+        _isSSelected = value;
+        if (!value) {_eventType = -1;} else {_eventType = 2;}
+      }
+    });
+  }
+
+  void _handleRChanged(bool value) {
+    setState(() {
+      if (_isSSelected || _isWSelected) {
+        _isWSelected = _isSSelected = false;
+        _isRSelected = true;
+        _eventType = 3;
+      } else {
+        _isRSelected = value;
+        if (!value) {_eventType = -1;} else {_eventType = 3;}
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -246,6 +292,46 @@ class _EventPageState extends State<EventPage> {
                   },
                 ),
               ),
+
+              PanelTitle(
+                title: "Event Type",
+                isRequired: false,
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10.0),
+                child: StreamBuilder(
+                  
+                  builder: (context, snapshot) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        RepeatTypeColumn(
+                            type: 1,
+                            name: "Work",
+                            iconValue: Icons.work,
+                            isSelected: _isWSelected,
+                            onChanged: _handleWChanged,
+                        ),
+                        RepeatTypeColumn(
+                            type: 2,
+                            name: "Sport",
+                            iconValue: Icons.pool,
+                            isSelected: _isSSelected,
+                            onChanged: _handleSChanged,
+                        ),
+                        RepeatTypeColumn(
+                            type: 3,
+                            name: "Relax",
+                            iconValue: Icons.music_note,
+                            isSelected: _isRSelected,
+                            onChanged: _handleRChanged,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+
               PanelTitle(
                 title: "Starting Time",
                 isRequired: true,
@@ -291,6 +377,8 @@ class _EventPageState extends State<EventPage> {
                         showErrorWidget('Please enter event name');
                       } else if (_repetition == -1) {
                         showErrorWidget('Please select whether to repeat');
+                      } else if (_eventType == -1) {
+                        showErrorWidget('Please select event type');
                       } else {
                         _saveEvent();
                       }
@@ -375,7 +463,8 @@ class _EventPageState extends State<EventPage> {
           'remark' : _remark,
           'fromTime' : _fromTime,
           'endTime' : _endTime,
-          'repetition' : _repetition
+          'repetition' : _repetition,
+          'eventType' : _eventType
         }
       ),
       headers: {

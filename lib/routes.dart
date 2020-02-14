@@ -5,6 +5,7 @@ import 'main.dart';
 import 'feedback.dart';
 import 'help.dart';
 import 'login.dart';
+import 'model/eventData.dart';
 
 final routes = {
   'feedbackRoute': (BuildContext context) => new FeedbackPage(),
@@ -46,5 +47,7 @@ class Global {
   };
   static String key_theme_color = 'purple';
   static int calendarType = 1;
+  static List<EventData> eventData = new List<EventData>();
+
 }
 
