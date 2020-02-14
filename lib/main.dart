@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
             home: FutureBuilder<bool>(
                   future: getUserLoginState(),
                     builder:(BuildContext context, AsyncSnapshot<bool> snapshot){
-                if (snapshot.data == true){
+                if (snapshot.data){
                   return MyHomePage();
                 }
                 else{
@@ -249,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
             ListTile(
               title: Text('2weeks'),
-              leading: new CircleAvatar(child: new Icon(Icons.view_agenda),),
+              leading: new CircleAvatar(child: new Icon(Icons.view_array),),
               onTap: () {
                 setState(() {
                   _calendarController.setCalendarFormat(CalendarFormat.twoWeeks); 
@@ -305,19 +305,27 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ],
         ),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          // Switch out 2 lines below to play with TableCalendar's settings
-          //-----------------------
-          rt.Global.calendarType == 1 ? _buildTableCalendarWithBuilders() : _buildTableCalendar(),
-          //_buildTableCalendar(),
-          
-          const SizedBox(height: 8.0),
-          //_buildButtons(),
-          const SizedBox(height: 8.0),
-          Expanded(child: _buildEventList()),
-        ],
+      body: FutureBuilder(
+        future: getReminderEvent(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              // Switch out 2 lines below to play with TableCalendar's settings
+              //-----------------------
+              rt.Global.calendarType == 1 ? _buildTableCalendarWithBuilders(snapshot.data) 
+                                          : _buildTableCalendar(snapshot.data),
+              
+              const SizedBox(height: 8.0),
+              //_buildButtons(),
+              const SizedBox(height: 8.0),
+              Expanded(child: _buildEventList()),
+            ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.white,
@@ -380,10 +388,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   // Simple TableCalendar configuration (using Styles)
-  Widget _buildTableCalendar() {
+  Widget _buildTableCalendar(Map map) {
     return TableCalendar(
       calendarController: _calendarController,
-      events: rt.Global.events,
+      events: map,
       holidays: _holidays,
       startingDayOfWeek: StartingDayOfWeek.monday,
       calendarStyle: CalendarStyle(
@@ -405,11 +413,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   // More advanced TableCalendar configuration (using Builders & Styles)
-  Widget _buildTableCalendarWithBuilders() {
+  Widget _buildTableCalendarWithBuilders(Map map) {
     return TableCalendar(
       locale: 'en_US',
       calendarController: _calendarController,
-      events: rt.Global.events,
+      events: map,
       holidays: _holidays,
       initialCalendarFormat: CalendarFormat.month,
       formatAnimation: FormatAnimation.slide,

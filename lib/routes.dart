@@ -18,8 +18,8 @@ final routes = {
 
 
 class Global {
-  static Map<DateTime, List> events = new Map();
   static final serverUrl = 'http://169.254.247.236:8080';
+  static Map<DateTime, List> events = new Map();
   static Map<int, String> repeatText = {
     0 : 'Do not repeat',
     1 : 'Every day',

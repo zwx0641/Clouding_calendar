@@ -505,7 +505,7 @@ class _EventPageState extends State<EventPage> {
         }
       ), (route) => route == null);
       Fluttertoast.showToast(
-        msg: 'Event saved',
+        msg: 'Event saved, you can review them in Agenda',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER
       );

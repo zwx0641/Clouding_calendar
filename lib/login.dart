@@ -250,6 +250,7 @@ class _LoginPageState extends State<LoginPage> {
       //存id到本地储存
       setGlobalUserInfo(user['id']);
       setUserEmail(user['email']);
+      setUserLoginState(true);
       Fluttertoast.showToast(
         msg: 'Logging you in...',
         toastLength: Toast.LENGTH_SHORT,
