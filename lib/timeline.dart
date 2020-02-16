@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:clouding_calendar/eventDetails.dart';
 import 'package:clouding_calendar/userServices.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_list/timeline.dart';
@@ -70,7 +71,6 @@ class _TimelinePageState extends State<TimelinePage> {
               List<EventData> events = snap.data;
               List<TimelineModel> timelines = new List();
               for (int i = 0; i < events.length; i++) {
-                print(i);
                 timelines.add(
                   TimelineModel(
                     Card(
@@ -80,31 +80,34 @@ class _TimelinePageState extends State<TimelinePage> {
                       clipBehavior: Clip.antiAlias,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Image.asset(events[i].eventType == 1 ? 'images/work.jpg' 
-                                        : (events[i].eventType == 2 ? 'images/sport.jpg' 
-                                        : 'images/relax.jpg')),
-                            const SizedBox(
-                              height: 8.0,
-                            ),
-                            Text(
-                              events[i].fromTime + ' to ' + events[i].endTime, 
-                              style: Theme.of(context).textTheme.caption
-                            ),
-                            const SizedBox(
-                              height: 8.0,
-                            ),
-                            Text(
-                              events[i].name,
-                              style: Theme.of(context).textTheme.title,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(
-                              height: 8.0,
-                            ),
-                          ],
+                        child: GestureDetector(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Image.asset(events[i].eventType == 1 ? 'images/work.jpg' 
+                                          : (events[i].eventType == 2 ? 'images/sport.jpg' 
+                                          : 'images/relax.jpg')),
+                              const SizedBox(
+                                height: 8.0,
+                              ),
+                              Text(
+                                events[i].fromTime + ' to ' + events[i].endTime, 
+                                style: Theme.of(context).textTheme.caption
+                              ),
+                              const SizedBox(
+                                height: 8.0,
+                              ),
+                              Text(
+                                events[i].name,
+                                style: Theme.of(context).textTheme.title,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(
+                                height: 8.0,
+                              ),
+                            ],
+                          ),
+                          onTap: () => getEventDetail(events[i].id),
                         ),
                       ),
                     ),
@@ -127,5 +130,58 @@ class _TimelinePageState extends State<TimelinePage> {
             }
         ),
       );
+  }
+
+  getEventDetail(String id) async {
+    var url = rt.Global.serverUrl + '/detailevent?id=' + id;
+    var response =  await http.post(
+      Uri.encodeFull(url),
+      headers: {
+        "content-type" : "application/json",
+        "accept" : "application/json",
+      }
+    );
+    var data = jsonDecode(response.body.toString());
+    List eventList = data['data'];
+
+    String _eventId, _eventEmail, _eventName, _location, _remark;
+    DateTime _fromTime, _endTime;
+    int _eventType, _repetition;
+
+    if (eventList?.isNotEmpty) {
+      for (var event in eventList) {
+        _eventId = event['id'];
+        _eventEmail = event['email'];
+        _eventName = event['eventName'];
+        _location = event['location'];
+        _remark = event['remark'];
+        _fromTime = DateTime.fromMillisecondsSinceEpoch(event['fromTime']);
+        _endTime = DateTime.fromMillisecondsSinceEpoch(event['endTime']);
+        _eventType = event['eventType'];
+        _repetition = event['repetition'];
+      }
+    }
+    
+    Navigator.of(context).push(
+      PageRouteBuilder<Null>(
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return AnimatedBuilder(
+              animation: animation,
+              builder: (BuildContext context, Widget child) {
+                return Opacity(
+                  opacity: animation.value,
+                  child: EventDetails(
+                    _eventId, _eventEmail,
+                    _eventName, _location,
+                    _remark, _fromTime,
+                    _endTime, _eventType, _repetition,
+                  ),
+                );
+              });
+        },
+        transitionDuration: Duration(milliseconds: 500),
+      ),
+    );
   }
 }

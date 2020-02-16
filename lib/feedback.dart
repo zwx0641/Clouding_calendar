@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class FeedbackPage extends StatefulWidget {
+  final String title;
+
+  const FeedbackPage({Key key, @required this.title}) : super(key: key);
   @override
   _FeedbackPageState createState() => _FeedbackPageState();
 }
@@ -27,7 +30,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
           icon: Icon(Icons.arrow_back), 
           onPressed: () {Navigator.pop(context);}
         ),
-        title: Text('Feedbacks'),
+        title: Text(widget.title),
         centerTitle: true,
       ),
       body: Container(
@@ -46,12 +49,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           top: MediaQuery.of(context).padding.top,
                           left: 16,
                           right: 16),
-                      child: new Image.asset('images/feedbackImage.png'),
+                      child: new Image.asset(widget.title == 'Feedbacks' 
+                      ? 'images/feedbackImage.png' : 'images/help.png'),
                     ),
                     Container(
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(
-                        'Your FeedBack',
+                        widget.title == 'Feedbacks' ? 'Your feedbacks' : 'How can I help you?',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -68,7 +72,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         ),
                       ),
                     ),
-                    _buildComposer(),
+                    _buildComposer(widget.title),
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: Center(
@@ -121,7 +125,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     );
   }
 
-  Widget _buildComposer() {
+  Widget _buildComposer(String title) {
     return Padding(
       padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
       child: Container(
@@ -157,7 +161,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 cursorColor: Colors.blue,
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Enter your feedback...'),
+                    hintText: title == 'Feebacks' ? 'Enter your feedback...' 
+                              : 'Anything you want to ask...'),
               ),
             ),
           ),

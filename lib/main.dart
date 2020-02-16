@@ -4,7 +4,6 @@ import 'package:clouding_calendar/common/appInfo.dart';
 import 'package:clouding_calendar/custom_router.dart';
 import 'package:clouding_calendar/event.dart';
 import 'package:clouding_calendar/feedback.dart';
-import 'package:clouding_calendar/help.dart';
 import 'package:clouding_calendar/local_notification_helper.dart';
 import 'package:clouding_calendar/login.dart';
 import 'package:clouding_calendar/reminder.dart';
@@ -63,8 +62,12 @@ class MyApp extends StatelessWidget {
             home: FutureBuilder<bool>(
                   future: getUserLoginState(),
                     builder:(BuildContext context, AsyncSnapshot<bool> snapshot){
-                if (snapshot.data){
-                  return MyHomePage();
+                if (snapshot.hasData){
+                  if (snapshot.data) {
+                    return MyHomePage();
+                  } else {
+                    return LoginPage();
+                  }
                 }
                 else{
                   return LoginPage();
@@ -285,14 +288,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               title: Text('Help'),
               leading: new CircleAvatar(child: new Icon(Icons.help),),
               onTap: () {
-                Navigator.push(context, new CustomRoute(HelpPage()));
+                Navigator.push(context, new CustomRoute(FeedbackPage(title: 'Support')));
               },
             ),
             ListTile(
               title: Text('Feedbacks'),
               leading: new CircleAvatar(child: new Icon(Icons.feedback),),
               onTap: () {
-                Navigator.push(context, new CustomRoute(FeedbackPage()));
+                Navigator.push(context, new CustomRoute(FeedbackPage(title: 'Feedbacks')));
               },
             ),
             ListTile(

@@ -8,7 +8,7 @@ import 'login.dart';
 import 'model/eventData.dart';
 
 final routes = {
-  'feedbackRoute': (BuildContext context) => new FeedbackPage(),
+  'feedbackRoute': (BuildContext context) => new FeedbackPage(title: 'Feedbacks'),
   'helpRoute': (BuildContext context) => new HelpPage(),
   'homepageRoute': (BuildContext context) => new MyHomePage(),
   'loginRoute': (BuildContext context) => new LoginPage(),

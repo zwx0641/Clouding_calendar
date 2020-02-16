@@ -338,9 +338,11 @@ class _ReminderPageState extends State<ReminderPage> {
               Container(
                 height: 280,
                 width: double.infinity,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: tiles  //呼出提醒列表
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: tiles  //呼出提醒列表
+                  ),
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,

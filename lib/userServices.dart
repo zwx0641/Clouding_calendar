@@ -76,7 +76,7 @@ Future<Map> getReminderEvent() async {
     }
   }
 
-  url = rt.Global.serverUrl + '/queryevent?email=' + email;
+/*   url = rt.Global.serverUrl + '/queryevent?email=' + email;
   response = await http.post(
     Uri.encodeFull(url),
     headers: {
@@ -100,7 +100,7 @@ Future<Map> getReminderEvent() async {
         eventMap[fromTime] = list;
       }
     }
-  }
+  } */
   rt.Global.events = eventMap;
   return eventMap;
 }
