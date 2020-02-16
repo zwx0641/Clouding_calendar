@@ -606,11 +606,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       //根据提醒类型进行不同操作
       
       if (reminderList?.isNotEmpty) {
+        int id = -1;
         for (var reminder in reminderList) {
           DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
           DateTime now = DateTime.now();
           if (DateTime.now().compareTo(remindTime) == 1) {
-            showOngoingNotification(notifications, title: "Don't forget this!", body: reminder['remindText']);
+            id += 1;
+            showOngoingNotification(
+              notifications, 
+              title: "Don't forget this!", 
+              body: reminder['remindText'],
+              id: id,
+            );
             if (reminder['repetition'] == 0) {
               url = rt.Global.serverUrl + '/dropreminder?id=' + reminder['id'];
               response = await http.post(
@@ -635,6 +642,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         }
       }
     });
+  }
+
+  startEventTimer() async {
+    
   }
 
   getReminderDetail(String remindText) async {
