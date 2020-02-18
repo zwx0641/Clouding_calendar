@@ -1,6 +1,7 @@
 
 import 'package:clouding_calendar/userServices.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 Widget header = FutureBuilder(
   future: getUserEmail(),
@@ -20,9 +21,13 @@ Widget header = FutureBuilder(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                new CircleAvatar(
-                  backgroundImage: AssetImage('images/pic1.jpg'),
-                  radius: 35.0,),
+                new GestureDetector(
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage('images/pic1.jpg'),
+                    radius: 35.0,
+                  ),
+                  onTap: getImage,
+                ),
                 new Container(
                   margin: EdgeInsets.only(left: 6.0),
                   child: new Column(
@@ -45,3 +50,9 @@ Widget header = FutureBuilder(
     );
   },
 );
+
+Future getImage() async {
+  var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+  print(image.toString());
+}
