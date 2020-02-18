@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             ),
             home: FutureBuilder<bool>(
                   future: getUserLoginState(),
-                    builder:(BuildContext context, AsyncSnapshot<bool> snapshot){
+                    builder:(BuildContext context, AsyncSnapshot<bool> snapshot) {
                 if (snapshot.hasData){
                   if (snapshot.data) {
                     return MyHomePage();
@@ -110,8 +110,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.initState();
     final _selectedDay = DateTime.now();
     _initAsync();
-    getReminderEvent();
     startTimer();
+    startEventTimer();
     /* rt.Global.events = {
       _selectedDay.subtract(Duration(days: 30)): ['Event A0', 'Event B0', 'Event C0'],
     }; */
@@ -609,7 +609,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         int id = -1;
         for (var reminder in reminderList) {
           DateTime remindTime = DateTime.fromMillisecondsSinceEpoch(reminder['remindTime']);
-          DateTime now = DateTime.now();
           if (DateTime.now().compareTo(remindTime) == 1) {
             id += 1;
             showOngoingNotification(
@@ -645,7 +644,58 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   startEventTimer() async {
-    
+    //设置一个监视器
+    Timer timer = new Timer.periodic(new Duration(seconds: 10), (timer) async {
+      //根据用户名找到提醒
+      String email = await getUserEmail();
+      var url = rt.Global.serverUrl + '/queryevent?email=' + email;
+      var response =  await http.post(
+        Uri.encodeFull(url),
+        headers: {
+          "content-type" : "application/json",
+          "accept" : "application/json",
+        }
+      );
+      var data = jsonDecode(response.body.toString());
+      List eventList = data['data'];
+      //根据提醒类型进行不同操作
+      
+      if (eventList?.isNotEmpty) {
+        int id = -1;
+        for (var event in eventList) {
+          DateTime fromTime = DateTime.fromMillisecondsSinceEpoch(event['fromTime']);
+          
+          if (DateTime.now().compareTo(fromTime) == 1) {
+            id += 1;
+            showOngoingNotification(
+              notifications, 
+              title: "On your schedule: ", 
+              body: event['eventName'],
+              id: id,
+            );
+            if (event['repetition'] == 0) {
+              url = rt.Global.serverUrl + '/dropevent?id=' + event['id'];
+              response = await http.post(
+                Uri.encodeFull(url),
+                headers: {
+                  "content-type" : "application/json",
+                  "accept" : "application/json",
+                }
+              );
+            } else {
+              url = rt.Global.serverUrl + '/updateevent?id=' + event['id'];
+              response = await http.post(
+                Uri.encodeFull(url),
+                headers: {
+                  "content-type" : "application/json",
+                  "accept" : "application/json",
+                }
+              );
+            }
+          }
+        }
+      }
+    });
   }
 
   getReminderDetail(String remindText) async {
