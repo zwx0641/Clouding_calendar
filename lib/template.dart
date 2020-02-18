@@ -2,6 +2,8 @@
 import 'package:clouding_calendar/userServices.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 Widget header = FutureBuilder(
   future: getUserEmail(),
@@ -52,7 +54,22 @@ Widget header = FutureBuilder(
 );
 
 Future getImage() async {
-  var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  if (await checkAndRequestCameraPermissions()) {
+    print(1);
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    print(image.toString());
+  }
+  
+}
 
-  print(image.toString());
+Future<bool> checkAndRequestCameraPermissions() async {
+  PermissionStatus permission =
+      await PermissionHandler().checkPermissionStatus(PermissionGroup.camera);
+  if (permission != PermissionStatus.granted) {
+    Map<PermissionGroup, PermissionStatus> permissions =
+        await PermissionHandler().requestPermissions([PermissionGroup.camera]);
+    return permissions[PermissionGroup.camera] == PermissionStatus.granted;
+  } else {
+    return true;
+  }
 }
