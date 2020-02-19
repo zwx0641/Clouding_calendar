@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Color _themeColor;
 
+    // Default theme
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: AppInfoProvider())
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
               accentColor: _themeColor,
               indicatorColor: Colors.white
             ),
+            // Validate user login state
             home: FutureBuilder<bool>(
                   future: getUserLoginState(),
                     builder:(BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -110,6 +112,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.initState();
     final _selectedDay = DateTime.now();
     _initAsync();
+
+    // 2 timers to monitor notifications
     startTimer();
     startEventTimer();
     /* rt.Global.events = {
@@ -141,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void _initAsync() async {
     await SpHelper.getInstance();
     String colorKey = SpHelper.getString(rt.Global.key_theme_color, defValue: 'purple');
-    // 设置初始化主题颜色
+    // Set default them
     Provider.of<AppInfoProvider>(context, listen: false).setTheme(colorKey);
   }
 
@@ -196,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     print('CALLBACK: _onVisibleDaysChanged');
   }
 
-//日历视图按钮
+//Calendar view button
   selectView(IconData icon, String text, String id) {
     return new PopupMenuItem<String>(
         value: id,
@@ -215,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        ////右上角选择日历视图
+        //Right corner 'setting'
         actions: <Widget>[
           new PopupMenuButton<String>(
             itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
@@ -234,7 +238,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         ],
         title: Text('A clouding calendar'),
       ),
-      //左侧抽屉
+      // Drawer on the left hand
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -313,6 +317,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ],
         ),
       ),
+      // Load reminders when in main page
       body: FutureBuilder(
         future: getReminderEvent(),
         builder: (context, snapshot) {
@@ -344,7 +349,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  //点击加号按钮触发的事件
+  // Tap + to add event/reminder
   void _addActivities() {
       showModalBottomSheet(
         context: context,
@@ -534,6 +539,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Display holidays with an icon
   Widget _buildHolidaysMarker() {
     return Icon(
       Icons.add_box,
@@ -565,10 +571,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   logout() async {
-    //获取本地缓存
+    // Get local cache
     var userId = await getGlobalUserInfo();
     var url = rt.Global.serverUrl + '/logout?userId=' + userId; 
-    //删除redis缓存
+    // Delete redis cache
     var response = await http.post(
       Uri.encodeFull(url),
       headers: {
@@ -585,18 +591,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER
       );
-      //删除本地缓存
+      // Delete local cache
       deleteGloabalUserInfo();
-      //设user没有login
+      // Set user state as logout
       setUserLoginState(false);
       Navigator.popAndPushNamed(context, 'loginRoute');
     }
   }
 
   startTimer() async {
-    //设置一个监视器
+    // Set a timer 
     Timer timer = new Timer.periodic(new Duration(seconds: 10), (timer) async {
-      //根据用户名找到提醒
+      // Find reminders according to email
       String email = await getUserEmail();
       var url = rt.Global.serverUrl + '/queryreminder?email=' + email;
       var response =  await http.post(
@@ -608,8 +614,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       );
       var data = jsonDecode(response.body.toString());
       List reminderList = data['data'];
-      //根据提醒类型进行不同操作
       
+      // Send notifications if time arrived
       if (reminderList?.isNotEmpty) {
         int id = -1;
         for (var reminder in reminderList) {
@@ -632,6 +638,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 }
               );
             } else {
+              // Update the next remind time
               url = rt.Global.serverUrl + '/updatereminder?id=' + reminder['id'];
               response = await http.post(
                 Uri.encodeFull(url),
@@ -726,6 +733,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       }
     }
     
+
+    // Show details of a reminder
     Navigator.of(context).push(
       PageRouteBuilder<Null>(
         pageBuilder: (BuildContext context, Animation<double> animation,

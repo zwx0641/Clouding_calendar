@@ -153,7 +153,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  //type:密码框的种类（1输入密码，2重复密码）
+  //type of password textfield（1 password，2 repeat password）
   TextFormField buildPasswordTextField(BuildContext context, int type) {
      return TextFormField(
        onChanged: (String value) {
@@ -234,7 +234,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  //注册方法，后端交互
+  // Registration, uses POST
   Future<Widget> sendPost() async {
     var url = rt.Global.serverUrl + '/register';
     var response = await http.post(
@@ -251,11 +251,11 @@ class _RegisterPageState extends State<RegisterPage> {
     data = jsonDecode(response.body.toString());
     _hintMessage = data['msg'];
     _code = data['status'];
-    //返回对话框，是否成功
+    // Whether successful
     if (_code == 200) {
       var user = data['data'];
       setGlobalUserInfo(user['id']);
-      //设user为login
+      // Set user state as login
       setUserLoginState(true);
       Navigator.popAndPushNamed(context, 'loginRoute');
     }

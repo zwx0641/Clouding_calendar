@@ -34,10 +34,10 @@ class _ReminderPageState extends State<ReminderPage> {
 
   @override
   Widget build(BuildContext context) {
-    //提醒的类型
+    // Repeat type
     
     for (int i = 0; i < 5; i++) {
-      //i=0为不重复，有图标
+      // i=0: never repeats, with an icon
       if (i == 0) {
         tiles.add(
           new ListTile(
@@ -52,7 +52,7 @@ class _ReminderPageState extends State<ReminderPage> {
           ),
         );
       } else {
-        //i!=0为重复，无图标
+        //i!=0: repeats, no icon
         tiles.add(
           new ListTile(
             leading: new Icon(Icons.replay, color: Colors.white),
@@ -120,7 +120,7 @@ class _ReminderPageState extends State<ReminderPage> {
           
           child: Column(
             children: <Widget>[
-              //提醒事件的标题
+              // Title
               TextField(
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
@@ -138,7 +138,7 @@ class _ReminderPageState extends State<ReminderPage> {
           
               Column(
                 children: <Widget>[
-                  //是否全天提醒
+                  // All day?
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -150,7 +150,7 @@ class _ReminderPageState extends State<ReminderPage> {
                         onChanged: (value) {
                           setState(() {
                             _switchSelected = value;
-                            //改变_visible，是否定时提醒
+                            // Change _visible(Set remind time)
                             _invisible = value;
                           });
                         },
@@ -160,7 +160,7 @@ class _ReminderPageState extends State<ReminderPage> {
                   SizedBox(height: 10, width: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    //时间选择器
+                    // Time selection
                     children: <Widget>[
                       InkWell(
                         onTap: () {
@@ -262,7 +262,7 @@ class _ReminderPageState extends State<ReminderPage> {
 
 
 
-    // 保存提醒事件到数据库
+    // Save to database
     _saveReminder() async {
       //Record remind time
       final dt = DateTime(_selectedDate.year, _selectedDate.month, 

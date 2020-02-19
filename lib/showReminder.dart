@@ -13,7 +13,7 @@ class ReminderDetails extends StatelessWidget {
   final int repetition;
   final String email;
 
-  //参数，提醒的id，email，内容，时间，重复类型
+  // Parameters(Reminder)
   ReminderDetails(this.id, this.email, this.remindText, this.remindTime, this.repetition);
 
   @override
@@ -98,7 +98,7 @@ class ReminderDetails extends StatelessWidget {
     );
   }
 
-  //删除一个reminder
+  // Delete a reminder
   deleteReminder(String id) async {
     var url = rt.Global.serverUrl + '/dropreminder?id=' + id;
     var response = await http.post(
@@ -133,7 +133,7 @@ class MainSection extends StatelessWidget {
     );
   }
 
-  //右侧文字区域
+  // Text areas on the right
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -209,7 +209,7 @@ class ExtendedSection extends StatelessWidget {
 
   ExtendedSection({Key key, @required this.repetition, this.remindTime}) : super(key: key);
 
-  //提醒间隔区域
+  // Repeat type area
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -230,7 +230,7 @@ class ExtendedSection extends StatelessWidget {
   }
 }
 
-//标题+信息
+// Title + text
 class ExtendedInfoTab extends StatelessWidget {
   final String fieldTitle;
   final String fieldInfo;

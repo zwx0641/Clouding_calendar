@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 Widget header(String email) { 
     return DrawerHeader(
       padding: EdgeInsets.zero, /* padding置为0 */
-      child: new Stack(children: <Widget>[ /* 用stack来放背景图片 */
+      child: new Stack(children: <Widget>[ /* Use stack to display background image */
         new Image.asset(
           'images/background.jpg', fit: BoxFit.fill, width: double.infinity,),
         new Align(/* 先放置对齐 */

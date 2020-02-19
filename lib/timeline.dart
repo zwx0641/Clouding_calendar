@@ -24,7 +24,7 @@ class _TimelinePageState extends State<TimelinePage> {
     super.initState();
   }
 
-  //得到event的内容
+  // Get the details of an event
   Future<List<EventData>> _getEvent() async {
     String email = await getUserEmail();
     var url = rt.Global.serverUrl + '/queryevent?email=' + email;

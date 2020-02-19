@@ -121,7 +121,7 @@ class _EventPageState extends State<EventPage> {
     });
   }
 
-  //event type控制
+  //event type controller
   void _handleWChanged(bool value) {
     setState(() {
       if (_isSSelected || _isRSelected) {
@@ -438,7 +438,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-    // 保存提醒事件到数据库
+    // Save event to database
   _saveEvent() async {
     //Record remind time
     final dft = DateTime(_selectedFromDate.year, _selectedFromDate.month, 
@@ -512,6 +512,7 @@ class _EventPageState extends State<EventPage> {
     }
   }
 
+  // A dialog showing errors
   Future<Widget> showErrorWidget(String hintMsg) {
     return showDialog(
       context: context,
@@ -655,7 +656,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
 }
 
 
-//重复图标和文字
+// Repeat icon and text
 class RepeatTypeColumn extends StatelessWidget {
   final String name;
   final IconData iconValue;
