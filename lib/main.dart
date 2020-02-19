@@ -197,7 +197,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
 //日历视图按钮
-  SelectView(IconData icon, String text, String id) {
+  selectView(IconData icon, String text, String id) {
     return new PopupMenuItem<String>(
         value: id,
         child: new Row(
@@ -219,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         actions: <Widget>[
           new PopupMenuButton<String>(
             itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
-                  this.SelectView(Icons.settings, 'Settings', 'A'),
+                  this.selectView(Icons.settings, 'Settings', 'A'),
               ],
               onSelected: (String action) {
                   // 点击按钮更换视图
@@ -338,14 +338,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.white,
         backgroundColor: Colors.blueGrey,
-        onPressed: _AddActivities,
+        onPressed: _addActivities,
         child: new Icon(Icons.add),
       ),
     );
   }
 
   //点击加号按钮触发的事件
-  void _AddActivities() {
+  void _addActivities() {
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {

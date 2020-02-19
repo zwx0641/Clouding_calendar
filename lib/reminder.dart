@@ -199,7 +199,7 @@ class _ReminderPageState extends State<ReminderPage> {
                       Icon(Icons.replay),
                       GestureDetector(
                         child: Text(_repeatsMsg, style: TextStyle(fontSize: 18)),
-                        onTap: _AddActivities
+                        onTap: _addActivities
                       ),
                       IgnorePointer(
                         ignoring: true,
@@ -324,7 +324,7 @@ class _ReminderPageState extends State<ReminderPage> {
     }
  
     //A sheet containing repeat selections
-    void _AddActivities() {
+    void _addActivities() {
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
