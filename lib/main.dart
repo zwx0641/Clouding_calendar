@@ -239,7 +239,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            header,
+            FutureBuilder(
+              future: getUserEmail(),
+              builder: (context, snapshot) {
+                return header(snapshot.data);
+              },
+            ),
             ListTile(
               title: Text('Month'),
               leading: new CircleAvatar(child: new Icon(Icons.today),),
@@ -311,9 +316,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       body: FutureBuilder(
         future: getReminderEvent(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          /* if (!snapshot.hasData) {
             return CircularProgressIndicator();
-          }
+          } */
           return Column(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[

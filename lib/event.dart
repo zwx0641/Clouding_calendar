@@ -232,7 +232,7 @@ class _EventPageState extends State<EventPage> {
                 },
               ),
               PanelTitle(
-                title: "remark",
+                title: "Remark",
                 isRequired: false,
               ),
               _buildComposer(),

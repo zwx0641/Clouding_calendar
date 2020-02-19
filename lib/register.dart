@@ -117,7 +117,33 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           color: Colors.black,
           onPressed: () {
-            
+            if (_repeatPassword != _password) {
+              return showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          SizedBox(height: 15),
+                          Text('Inconsistent passwords', style: TextStyle(fontSize: 17),),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      new FlatButton(
+                        child: new Text('Confirm', style: TextStyle(color: Colors.white),),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          },
+                        color: Colors.blueGrey,
+                      )
+                    ],
+                  );
+                }
+              );
+            }
             //执行登陆方法
             return sendPost();
           },
@@ -144,7 +170,7 @@ class _RegisterPageState extends State<RegisterPage> {
          }
        },
        decoration: InputDecoration(
-         labelText: 'Password',
+         labelText: type == 1 ? 'Password' : 'Repeat your password',
          suffixIcon: IconButton(
            icon: Icon(Icons.remove_red_eye, color: _eyeColor,),
            onPressed: () {
@@ -226,6 +252,13 @@ class _RegisterPageState extends State<RegisterPage> {
     _hintMessage = data['msg'];
     _code = data['status'];
     //返回对话框，是否成功
+    if (_code == 200) {
+      var user = data['data'];
+      setGlobalUserInfo(user['id']);
+      //设user为login
+      setUserLoginState(true);
+      Navigator.popAndPushNamed(context, 'loginRoute');
+    }
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -243,15 +276,7 @@ class _RegisterPageState extends State<RegisterPage> {
             new FlatButton(
               child: new Text('Confirm', style: TextStyle(color: Colors.white),),
               onPressed: () {
-                if (_code == 200) {
-                  var user = data['data'];
-                  setGlobalUserInfo(user['id']);
-                  //设user为login
-                  setUserLoginState(true);
-                  Navigator.popAndPushNamed(context, 'loginRoute');
-                } else {
-                  Navigator.of(context).pop();
-                }
+                Navigator.of(context).pop();
               },
               color: Colors.blueGrey,
             )

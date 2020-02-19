@@ -5,9 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
-Widget header = FutureBuilder(
-  future: getUserEmail(),
-  builder: (context, snapshot) {
+Widget header(String email) { 
     return DrawerHeader(
       padding: EdgeInsets.zero, /* padding置为0 */
       child: new Stack(children: <Widget>[ /* 用stack来放背景图片 */
@@ -36,7 +34,7 @@ Widget header = FutureBuilder(
                     crossAxisAlignment: CrossAxisAlignment.start, // 水平方向左对齐
                     mainAxisAlignment: MainAxisAlignment.center, // 竖直方向居中
                     children: <Widget>[
-                      new Text(snapshot.hasData ? snapshot.data : 'Please log in', style: new TextStyle(
+                      new Text(email, style: new TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.w400,
                           color: Colors.white),),
@@ -50,8 +48,7 @@ Widget header = FutureBuilder(
         ),
       ]),
     );
-  },
-);
+}
 
 Future getImage() async {
   if (await checkAndRequestCameraPermissions()) {

@@ -264,7 +264,7 @@ class _LoginPageState extends State<LoginPage> {
       ), (route) => route == null);
       
     } else {
-        return showDialog(
+      return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
@@ -281,9 +281,7 @@ class _LoginPageState extends State<LoginPage> {
               new FlatButton(
                 child: new Text('Confirm', style: TextStyle(color: Colors.white),),
                 onPressed: () {
-                  
                   Navigator.of(context).pop();
-                    
                   },
                 color: Colors.blueGrey,
               )

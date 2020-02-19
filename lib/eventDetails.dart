@@ -99,7 +99,7 @@ class EventDetails extends StatelessWidget {
                             },
                             child: Center(
                               child: Text(
-                                "Delete Reminder",
+                                "Delete Event",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 22,
