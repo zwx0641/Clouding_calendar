@@ -28,6 +28,8 @@ dependencies:
   provider: ^4.0.3
   synchronized: ^2.2.0
   flutter_email_sender: ^2.2.2
+  intro_views_flutter: ^2.8.0
+  google_places_picker: ^0.0.9
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -84,6 +86,26 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+  fonts:
+    - family: MyFont
+      fonts:
+        - asset: fonts/sspu.ttf
+    - family: Montserrat
+      fonts:
+        - asset: fonts/montserrat/Montserrat-Regular.ttf
+        - asset: fonts/montserrat/Montserrat-Medium.ttf
+          weight : 400
+        - asset: fonts/montserrat/Montserrat-Italic.ttf
+          style: italic
+        - asset: fonts/montserrat/Montserrat-Light.ttf
+          weight: 200
+        - asset: fonts/montserrat/Montserrat-SemiBold.ttf
+          weight: 500
+        - asset: fonts/montserrat/Montserrat-Bold.ttf
+          weight: 700
+    - family: Icons
+      fonts:
+        - asset: fonts/icons.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

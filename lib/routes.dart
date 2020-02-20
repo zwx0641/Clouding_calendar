@@ -1,18 +1,20 @@
+import 'package:clouding_calendar/signin.dart';
 import 'package:clouding_calendar/reminder.dart';
+import 'package:clouding_calendar/signup.dart';
 import 'package:flutter/material.dart';
 
 import 'main.dart';
 import 'feedback.dart';
 import 'help.dart';
-import 'login.dart';
 import 'model/eventData.dart';
 
 final routes = {
   'feedbackRoute': (BuildContext context) => new FeedbackPage(title: 'Feedbacks'),
   'helpRoute': (BuildContext context) => new HelpPage(),
   'homepageRoute': (BuildContext context) => new MyHomePage(),
-  'loginRoute': (BuildContext context) => new LoginPage(),
-  'reminderPageRoute': (BuildContext context) => new ReminderPage()
+  'reminderPageRoute': (BuildContext context) => new ReminderPage(),
+  'signinRoute': (BuildContext context) => new SigninPage(),
+  'signupRoute': (BuildContext context) => new SignupPage()
 };
 
 

@@ -546,10 +546,10 @@ class SelectDateTime extends StatefulWidget {
   @override
   _SelectDateTimeState createState() => _SelectDateTimeState(type: type);
 
-  /**
-   * type 1: From
-   * type 2: End
-   */
+  /// type 1: From
+
+  /// type 2: End
+
   SelectDateTime({Key key, @required this.type}) : super (key: key);
 }
 

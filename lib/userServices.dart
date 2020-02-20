@@ -45,6 +45,18 @@ Future<String> getUserEmail() async {
   return prefs.getString('userEmail');
 }
 
+//设置介绍状态
+setIntroState(ifIntro) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setBool("ifIntro", ifIntro);
+}
+
+//获取介绍状态
+Future<bool> getIntroState() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('ifIntro');
+}
+
 //获取提醒事件
 Future<Map> getReminderEvent() async {
   String email = await getUserEmail();

@@ -1,18 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:clouding_calendar/const/gradient_const.dart';
+import 'package:clouding_calendar/signin.dart';
 import 'package:clouding_calendar/common/appInfo.dart';
 import 'package:clouding_calendar/custom_router.dart';
 import 'package:clouding_calendar/event.dart';
 import 'package:clouding_calendar/feedback.dart';
 import 'package:clouding_calendar/local_notification_helper.dart';
-import 'package:clouding_calendar/login.dart';
 import 'package:clouding_calendar/reminder.dart';
 import 'package:clouding_calendar/settings.dart';
 import 'package:clouding_calendar/timeline.dart';
+import 'package:clouding_calendar/widget/introView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intro_views_flutter/intro_views_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:clouding_calendar/template.dart';
@@ -62,17 +65,45 @@ class MyApp extends StatelessWidget {
             ),
             // Validate user login state
             home: FutureBuilder<bool>(
-                  future: getUserLoginState(),
-                    builder:(BuildContext context, AsyncSnapshot<bool> snapshot) {
+              future: getUserLoginState(),
+              builder:(BuildContext context, AsyncSnapshot<bool> snapshot) {
                 if (snapshot.hasData){
                   if (snapshot.data) {
                     return MyHomePage();
                   } else {
-                    return LoginPage();
+                    return IntroViewsFlutter(
+                      pages,
+                      showNextButton: true,
+                      showBackButton: true,
+                      onTapDoneButton: () {
+                        Navigator.push(
+                          context, MaterialPageRoute(
+                            builder: (context) => SigninPage(),
+                          )
+                        );
+                      },
+                      pageButtonTextStyles: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0
+                      ),
+                    );
                   }
                 }
                 else{
-                  return LoginPage();
+                  return IntroViewsFlutter(
+                    pages,
+                    showNextButton: true,
+                    showBackButton: true,
+                    onTapDoneButton: () {
+                      Navigator.popAndPushNamed(
+                        context, 'signinRoute'
+                      );
+                    },
+                    pageButtonTextStyles: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.0
+                    ),
+                  );
                 }
               }
             ),
@@ -107,6 +138,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   String _reminderId, _remindText, _reminderEmail;
   DateTime _remindTime;
   int _repetition;
+
   @override
   void initState() {
     super.initState();
@@ -240,105 +272,111 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
       // Drawer on the left hand
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            FutureBuilder(
-              future: getUserEmail(),
-              builder: (context, snapshot) {
-                return header(snapshot.data);
-              },
-            ),
-            ListTile(
-              title: Text('Month'),
-              leading: new CircleAvatar(child: new Icon(Icons.today),),
-              onTap: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.month);
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('2weeks'),
-              leading: new CircleAvatar(child: new Icon(Icons.view_array),),
-              onTap: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.twoWeeks); 
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Week'),
-              leading: new CircleAvatar(child: new Icon(Icons.view_day),),
-              onTap: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.week); 
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Agenda'),
-              leading: new CircleAvatar(child: new Icon(Icons.view_agenda),),
-              onTap: () {
-                Navigator.push(context, new CustomRoute(TimelinePage(title: 'Agenda',)));
-              },
-            ),
-            ListTile(
-              title: Text('Settings'),
-              leading: new CircleAvatar(child: new Icon(Icons.settings),),
-              onTap: () {
-                Navigator.push(context, new CustomRoute(SettingPage()));
-              },
-            ),
-            ListTile(
-              title: Text('Help'),
-              leading: new CircleAvatar(child: new Icon(Icons.help),),
-              onTap: () {
-                Navigator.push(context, new CustomRoute(FeedbackPage(title: 'Support')));
-              },
-            ),
-            ListTile(
-              title: Text('Feedbacks'),
-              leading: new CircleAvatar(child: new Icon(Icons.feedback),),
-              onTap: () {
-                Navigator.push(context, new CustomRoute(FeedbackPage(title: 'Feedbacks')));
-              },
-            ),
-            ListTile(
-              title: Text('Logout'),
-              leading: new CircleAvatar(child: new Icon(Icons.power_settings_new),),
-              onTap: () {
-                logout();
-              },
-            )
-          ],
+        child: Container(
+          decoration: BoxDecoration(gradient: SIGNUP_BACKGROUND),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              FutureBuilder(
+                future: getUserEmail(),
+                builder: (context, snapshot) {
+                  return header(snapshot.data);
+                },
+              ),
+              ListTile(
+                title: Text('Month'),
+                leading: new CircleAvatar(child: new Icon(Icons.today),),
+                onTap: () {
+                  setState(() {
+                    _calendarController.setCalendarFormat(CalendarFormat.month);
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('2weeks'),
+                leading: new CircleAvatar(child: new Icon(Icons.view_array),),
+                onTap: () {
+                  setState(() {
+                    _calendarController.setCalendarFormat(CalendarFormat.twoWeeks); 
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Week'),
+                leading: new CircleAvatar(child: new Icon(Icons.view_day),),
+                onTap: () {
+                  setState(() {
+                    _calendarController.setCalendarFormat(CalendarFormat.week); 
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Agenda'),
+                leading: new CircleAvatar(child: new Icon(Icons.view_agenda),),
+                onTap: () {
+                  Navigator.push(context, new CustomRoute(TimelinePage(title: 'Agenda',)));
+                },
+              ),
+              ListTile(
+                title: Text('Settings'),
+                leading: new CircleAvatar(child: new Icon(Icons.settings),),
+                onTap: () {
+                  Navigator.push(context, new CustomRoute(SettingPage()));
+                },
+              ),
+              ListTile(
+                title: Text('Help'),
+                leading: new CircleAvatar(child: new Icon(Icons.help),),
+                onTap: () {
+                  Navigator.push(context, new CustomRoute(FeedbackPage(title: 'Support')));
+                },
+              ),
+              ListTile(
+                title: Text('Feedbacks'),
+                leading: new CircleAvatar(child: new Icon(Icons.feedback),),
+                onTap: () {
+                  Navigator.push(context, new CustomRoute(FeedbackPage(title: 'Feedbacks')));
+                },
+              ),
+              ListTile(
+                title: Text('Logout'),
+                leading: new CircleAvatar(child: new Icon(Icons.power_settings_new),),
+                onTap: () {
+                  logout();
+                },
+              )
+            ],
+          ),
         ),
       ),
       // Load reminders when in main page
-      body: FutureBuilder(
-        future: getReminderEvent(),
-        builder: (context, snapshot) {
-          /* if (!snapshot.hasData) {
-            return CircularProgressIndicator();
-          } */
-          return Column(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              // Switch out 2 lines below to play with TableCalendar's settings
-              //-----------------------
-              rt.Global.calendarType == 1 ? _buildTableCalendarWithBuilders(snapshot.data) 
-                                          : _buildTableCalendar(snapshot.data),
-              
-              const SizedBox(height: 8.0),
-              //_buildButtons(),
-              const SizedBox(height: 8.0),
-              Expanded(child: _buildEventList()),
-            ],
-          );
-        },
+      body: Container(
+        decoration: BoxDecoration(gradient: SIGNUP_BACKGROUND),
+        child: FutureBuilder(
+          future: getReminderEvent(),
+          builder: (context, snapshot) {
+            /* if (!snapshot.hasData) {
+              return CircularProgressIndicator();
+            } */
+            return Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                // Switch out 2 lines below to play with TableCalendar's settings
+                //-----------------------
+                rt.Global.calendarType == 1 ? _buildTableCalendarWithBuilders(snapshot.data) 
+                                            : _buildTableCalendar(snapshot.data),
+                
+                const SizedBox(height: 8.0),
+                //_buildButtons(),
+                const SizedBox(height: 8.0),
+                Expanded(child: _buildEventList()),
+              ],
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.white,
@@ -595,7 +633,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       deleteGloabalUserInfo();
       // Set user state as logout
       setUserLoginState(false);
-      Navigator.popAndPushNamed(context, 'loginRoute');
+      Navigator.popAndPushNamed(context, 'signinRoute');
     }
   }
 
