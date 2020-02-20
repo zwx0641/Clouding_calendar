@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:clouding_calendar/const/gradient_const.dart';
 import 'package:clouding_calendar/main.dart';
 import 'package:clouding_calendar/userServices.dart';
 import 'package:date_format/date_format.dart';
@@ -176,7 +177,7 @@ class _EventPageState extends State<EventPage> {
         ),
         centerTitle: true,
         title: Text(
-          "Add New Mediminder",
+          "Add New Event",
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -185,6 +186,10 @@ class _EventPageState extends State<EventPage> {
         elevation: 0.0,
       ),
       body: Container(
+        decoration: BoxDecoration(
+          gradient: SIGNUP_BACKGROUND,
+          
+        ),
         child: Provider.value(
           
           child: ListView(
@@ -691,6 +696,7 @@ class RepeatTypeColumn extends StatelessWidget {
             width: 68,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
+              gradient: SIGNUP_CARD_BACKGROUND,
               color: isSelected ? Colors.purple[100] : Colors.white,
             ),
             child: Center(

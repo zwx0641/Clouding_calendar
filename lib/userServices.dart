@@ -116,3 +116,19 @@ Future<Map> getReminderEvent() async {
   rt.Global.events = eventMap;
   return eventMap;
 }
+
+Future getUserVO() async {
+  String userId = await getGlobalUserInfo();
+  var url = rt.Global.serverUrl + '/user/query?userId=' + userId;
+  var response = await http.post(
+    Uri.encodeFull(url),
+    headers: {
+      "content-type" : "application/json",
+      "accept" : "application/json",
+    }
+  );
+  var data = jsonDecode(response.body.toString());
+  
+  var user = data['data'];
+  return user;
+}

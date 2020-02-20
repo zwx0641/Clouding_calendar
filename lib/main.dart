@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:clouding_calendar/const/gradient_const.dart';
+import 'package:clouding_calendar/const/styles.dart';
 import 'package:clouding_calendar/signin.dart';
 import 'package:clouding_calendar/common/appInfo.dart';
 import 'package:clouding_calendar/custom_router.dart';
@@ -268,7 +269,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               },
           )
         ],
-        title: Text('A clouding calendar'),
+        title: Text('A clouding calendar', style: TextStyle(
+                fontSize: 22.0,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.normal),),
       ),
       // Drawer on the left hand
       drawer: Drawer(
@@ -278,13 +282,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             padding: EdgeInsets.zero,
             children: <Widget>[
               FutureBuilder(
-                future: getUserEmail(),
+                future: getUserVO(),
                 builder: (context, snapshot) {
-                  return header(snapshot.data);
+                  
+                  
+                  return header(snapshot.data['email'], snapshot.data['face_image']);
                 },
               ),
               ListTile(
-                title: Text('Month'),
+                title: Text('Month', style: hintAndValueStyle,),
                 leading: new CircleAvatar(child: new Icon(Icons.today),),
                 onTap: () {
                   setState(() {
@@ -294,7 +300,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 },
               ),
               ListTile(
-                title: Text('2weeks'),
+                title: Text('2weeks', style: hintAndValueStyle,),
                 leading: new CircleAvatar(child: new Icon(Icons.view_array),),
                 onTap: () {
                   setState(() {
@@ -304,7 +310,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 },
               ),
               ListTile(
-                title: Text('Week'),
+                title: Text('Week', style: hintAndValueStyle,),
                 leading: new CircleAvatar(child: new Icon(Icons.view_day),),
                 onTap: () {
                   setState(() {
@@ -314,35 +320,35 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 },
               ),
               ListTile(
-                title: Text('Agenda'),
+                title: Text('Agenda', style: hintAndValueStyle,),
                 leading: new CircleAvatar(child: new Icon(Icons.view_agenda),),
                 onTap: () {
                   Navigator.push(context, new CustomRoute(TimelinePage(title: 'Agenda',)));
                 },
               ),
               ListTile(
-                title: Text('Settings'),
+                title: Text('Settings', style: hintAndValueStyle,),
                 leading: new CircleAvatar(child: new Icon(Icons.settings),),
                 onTap: () {
                   Navigator.push(context, new CustomRoute(SettingPage()));
                 },
               ),
               ListTile(
-                title: Text('Help'),
+                title: Text('Help', style: hintAndValueStyle,),
                 leading: new CircleAvatar(child: new Icon(Icons.help),),
                 onTap: () {
                   Navigator.push(context, new CustomRoute(FeedbackPage(title: 'Support')));
                 },
               ),
               ListTile(
-                title: Text('Feedbacks'),
+                title: Text('Feedbacks', style: hintAndValueStyle,),
                 leading: new CircleAvatar(child: new Icon(Icons.feedback),),
                 onTap: () {
                   Navigator.push(context, new CustomRoute(FeedbackPage(title: 'Feedbacks')));
                 },
               ),
               ListTile(
-                title: Text('Logout'),
+                title: Text('Logout', style: hintAndValueStyle,),
                 leading: new CircleAvatar(child: new Icon(Icons.power_settings_new),),
                 onTap: () {
                   logout();
@@ -407,16 +413,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   children: <Widget>[
                     //添加需要完成的事件
                     new ListTile(
-                      leading: new Icon(Icons.event, color: Colors.white),
-                      title: new Text('Event', style: TextStyle(color: Colors.white)),
+                      leading: new Icon(Icons.event, color: Colors.black),
+                      title: new Text('Event', style: hintAndValueStyle),
                       onTap: () {
                         Navigator.of(context).push(new CustomRoute(new EventPage()));
                       },
                     ),
                     //添加提醒
                     new ListTile(
-                      leading: new Icon(Icons.alarm_add, color: Colors.white),
-                      title: new Text('Reminder', style: TextStyle(color: Colors.white)),
+                      leading: new Icon(Icons.alarm_add, color: Colors.black),
+                      title: new Text('Reminder', style: hintAndValueStyle),
                       onTap: () {
                         Navigator.of(context).push(new CustomRoute(new ReminderPage()));
                       },
@@ -424,7 +430,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   ],
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.purple[100],
+                  gradient: SIGNUP_BACKGROUND,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(25),
                     topRight: Radius.circular(25)
@@ -596,7 +602,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 ),
                 margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: ListTile(
-                  title: Text(event.toString()),
+                  title: Text(event.toString(), style: hintAndValueStyle,),
                   onTap: () {
                     //POST to get the reminder's detail
                     getReminderDetail(event.toString());

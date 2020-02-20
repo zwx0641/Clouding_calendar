@@ -1,16 +1,24 @@
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:clouding_calendar/userServices.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:path/path.dart';
+import 'package:async/async.dart';
+import 'package:http/http.dart' as http;
+import 'package:clouding_calendar/routes.dart' as rt;
 
 
-Widget header(String email) { 
+Widget header(String email, String faceImage) {
+    String faceUrl = rt.Global.serverUrl + faceImage; 
     return DrawerHeader(
       padding: EdgeInsets.zero, /* padding置为0 */
       child: new Stack(children: <Widget>[ /* Use stack to display background image */
-        new Image.asset(
-          'images/background.jpg', fit: BoxFit.fill, width: double.infinity,),
+        
+        new Image.asset('images/pic1.jpg', fit: BoxFit.fill, width: double.infinity,),
         new Align(/* 先放置对齐 */
           alignment: FractionalOffset.bottomLeft,
           child: Container(
@@ -23,10 +31,13 @@ Widget header(String email) {
               children: <Widget>[
                 new GestureDetector(
                   child: CircleAvatar(
-                    backgroundImage: AssetImage('images/pic1.jpg'),
+                    backgroundImage: faceUrl != null ? NetworkImage(faceUrl) :
+                                      AssetImage('images/pic1.jpg'),
                     radius: 35.0,
                   ),
-                  onTap: getImage,
+                  onTap: () {
+                    getImage();
+                  },
                 ),
                 new Container(
                   margin: EdgeInsets.only(left: 6.0),
@@ -37,9 +48,11 @@ Widget header(String email) {
                       new Text(email, style: new TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.w400,
-                          color: Colors.white),),
+                          color: Colors.black,
+                          fontFamily: 'Montserrat'),),
                       new Text("What's up", style: new TextStyle(
-                          fontSize: 14.0, color: Colors.white),),
+                          fontSize: 14.0, color: Colors.black,
+                          fontFamily: 'Montserrat'),),
                     ],
                   ),
                 ),
@@ -50,23 +63,49 @@ Widget header(String email) {
     );
 }
 
+// Upload avatar
 Future getImage() async {
-  if (await checkAndRequestCameraPermissions()) {
-    print(1);
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    print(image.toString());
-  }
-  
-}
+  try {
+    String userId = await getGlobalUserInfo();
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var uploadURL = rt.Global.serverUrl + '/user/uploadFace?userId=' + userId;
 
-Future<bool> checkAndRequestCameraPermissions() async {
-  PermissionStatus permission =
-      await PermissionHandler().checkPermissionStatus(PermissionGroup.camera);
-  if (permission != PermissionStatus.granted) {
-    Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions([PermissionGroup.camera]);
-    return permissions[PermissionGroup.camera] == PermissionStatus.granted;
-  } else {
-    return true;
-  }
+    if (image != null) {
+      var stream = new http.ByteStream(DelegatingStream.typed(image.openRead()));
+      var length = await image.length();
+
+      var uri = Uri.parse(uploadURL);
+
+      // Upload file
+      var request = new http.MultipartRequest("POST", uri);
+      var multipartFile = new http.MultipartFile('file', stream, length,
+            filename: basename(image.path));
+            //contentType: new MediaType('image', 'png'));
+
+      request.files.add(multipartFile);
+      var response = await request.send();
+      print(response.statusCode);
+      String _responseString;
+      response.stream.transform(utf8.decoder).listen((value) {
+        _responseString = value;
+      });
+      // Parse returned string to json
+      var _responseJson = jsonDecode(_responseString);
+      
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: 'Upload successful',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER
+        );
+      } else if (response.statusCode == 500) {
+        Fluttertoast.showToast(
+          msg: _responseJson['msg'],
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER
+        );
+      }
+    }
+  } catch (e) {}
 }
