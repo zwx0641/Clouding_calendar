@@ -1,74 +1,133 @@
 import 'dart:convert';
 
-import 'package:clouding_calendar/const/gradient_const.dart';
-
-import 'main.dart';
+import 'package:clouding_calendar/main.dart';
 import 'package:clouding_calendar/userServices.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:date_format/date_format.dart';
 import 'package:intl/intl.dart';
-import 'routes.dart' as rt;
+import 'dart:async';
+import 'const/color_const.dart';
+import 'const/gradient_const.dart';
+import 'const/size_const.dart';
+import 'widget/signup_apbar.dart';
+import 'widget/signup_arrow_button.dart';
+import 'package:clouding_calendar/routes.dart' as rt;
 import 'package:http/http.dart' as http;
 
 class ReminderPage extends StatefulWidget {
-  @override
   _ReminderPageState createState() => _ReminderPageState();
 }
 
 class _ReminderPageState extends State<ReminderPage> {
+  String _currentDate = 'Select Date';
+  String _currentTime = 'Select Time';
   DateTime _selectedDate;
-  TimeOfDay _selectedTime;
+  String _remindText;
+  TimeOfDay _selectedTime = new TimeOfDay(hour: 0, minute: 00);
+  List _repeatArray = ["Does not repeat", "Everyday", "Every week", "Every month", "Every year"];
+  String _currentRepeat = "Does not repeat";
+  int _repetition = 0;
+  TextEditingController _controller = TextEditingController();
   bool _switchSelected = true;
   bool _invisible = true;
-  String _reminderTitle;
-  List<String> _repeatArray = ['Does not repeat', 'Everyday', 'Every week', 'Every month', 'Every year'];
-  String _repeatsMsg = 'Repeats';
-  int _repeatTimes;
-  List<Widget> tiles = [];
 
-  void initState() { 
-    super.initState();
-    _repeatTimes = -1;
-    _selectedDate = DateTime.now();
-    _selectedTime = TimeOfDay(hour: 0, minute: 0);
+  void changeDropDownLocationItem(String selectedRepeat) {
+    setState(() {
+      _currentRepeat = selectedRepeat;
+      _repetition = _repeatArray.indexOf(selectedRepeat);
+    });
+  }
+
+  Future _selectDate() async {
+    DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(2016),
+        lastDate: new DateTime(2050));
+    if (picked != null)
+      setState(() {
+        _currentDate = formatDate(picked, [yyyy, '-', mm, '-', 'dd']);
+        _selectedDate = picked;
+      });
+  }
+
+  Future _selectTime() async {
+    TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: new TimeOfDay(hour: 0, minute: 00),
+    );
+    if (picked != null) {
+      setState(() {
+        _currentTime = '${picked.format(context)}';
+        _selectedTime = picked;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Repeat type
-    
-    for (int i = 0; i < 5; i++) {
-      // i=0: never repeats, with an icon
-      if (i == 0) {
-        tiles.add(
-          new ListTile(
-            leading: new Icon(Icons.replay, color: Colors.black),
-            title: new Text(_repeatArray[i], style: TextStyle(color: Colors.black)),
-            onTap: () {
-              setState(() {
-                _repeatsMsg = _repeatArray[i];
-                _repeatTimes = i;
-              });
-            },
-          ),
-        );
-      } else {
-        //i!=0: repeats, no icon
-        tiles.add(
-          new ListTile(
-            leading: new Icon(Icons.replay, color: Colors.white),
-            title: new Text(_repeatArray[i], style: TextStyle(color: Colors.black)),
-            onTap: () {
-              setState(() {
-                _repeatsMsg = _repeatArray[i];
-                _repeatTimes = i;
-              });
-            },
-          ),
-        );
-      }
-    }
+    final _media = MediaQuery.of(context).size;
+
+    return Scaffold(
+      appBar: SignupApbar(
+        title: "CREATE REMINDER",
+      ),
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              height: _media.height,
+              width: _media.width,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    'images/signup_page_11_bg.png',
+                  ),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 30,
+                ),
+                SignUpArrowButton(
+                  height: 70,
+                  width: 70,
+                  icon: IconData(0xe903, fontFamily: 'Icons'),
+                  iconSize: 30,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                fieldColorBox(
+                    SIGNUP_BACKGROUND, "REMINDER NAME", _controller),
+                dateColorBox(
+                    SIGNUP_BACKGROUND, "TIME", _currentDate, _selectDate, _currentTime, _selectTime),
+                shadowColorBox(
+                    SIGNUP_CARD_BACKGROUND, "ALL DAY"),
+                Wrap(children: <Widget>[
+                  locationColorBox(
+                      SIGNUP_BACKGROUND, "LOCATION", _currentRepeat),
+                ]),
+                
+                SizedBox(
+                  height: 30,
+                ),
+                nexButton("Confirm"),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
     Future<Widget> _showErrorWidget(String hintMsg) {
       return showDialog(
@@ -96,271 +155,347 @@ class _ReminderPageState extends State<ReminderPage> {
       );
     }
 
-    //提醒重复几次
-
-    return new Scaffold(
-      appBar: AppBar(
-        title: new Text('Reminder'),
-        actions: <Widget>[
-          new IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              if (_reminderTitle == null) {
-                _showErrorWidget('Please enter reminder name');
-              } else if (_repeatTimes == -1) {
-                _showErrorWidget('Please select whether to repeat');
-              } else {
-                return _saveReminder();
-              }
-            }
-          )
-        ],
+  Widget locationColorBox(
+      Gradient gradient, String title, String currentLocation) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 30.0,
+        right: 30,
+        bottom: 8,
       ),
-      body: Container(
-        decoration: BoxDecoration(gradient: SIGNUP_BACKGROUND),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
-          child: Form(
-            
-            child: Column(
-              children: <Widget>[
-                // Title
-                TextField(
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintStyle: new TextStyle(fontSize: 20),
-                    hintText: 'Reminde me of ...',
-                    prefixIcon: Icon(Icons.add, color: Colors.white),
-                    border: InputBorder.none,
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _reminderTitle = value;
-                    });
-                  },
-                ),
-            
-                Column(
-                  children: <Widget>[
-                    // All day?
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Icon(Icons.query_builder),
-                        Text('All day', style: TextStyle(fontSize: 18)),
-                        CupertinoSwitch(
-                          value: _switchSelected,
-                          activeColor: Colors.purple[100],
-                          onChanged: (value) {
-                            setState(() {
-                              _switchSelected = value;
-                              // Change _visible(Set remind time)
-                              _invisible = value;
-                            });
-                          },
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 10, width: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      // Time selection
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            _showDatePicker();
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(formatDate(this._selectedDate, [yyyy, '-', mm, '-', 'dd'])),
-                              Icon(Icons.arrow_drop_down)
-                            ],
-                          ),
-                        ),
-                        Offstage(
-                          offstage: _invisible,
-                          child: InkWell(
-                            onTap: () {
-                              _showTimePicker();
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text('${this._selectedTime.format(context)}'),
-                                Icon(Icons.arrow_drop_down)
-                              ],
-                            ),
-                          )
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10, width: 10),
-                    //提醒次数
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Icon(Icons.replay),
-                        GestureDetector(
-                          child: Text(_repeatsMsg, style: TextStyle(fontSize: 18)),
-                          onTap: _addActivities
-                        ),
-                        IgnorePointer(
-                          ignoring: true,
-                          child: new Opacity(
-                            opacity: 0.0,
-                            child: CupertinoSwitch(
-                              value: _switchSelected, onChanged: (bool value) {},
-                            ),
-                          )
-                        )
-                      ],
-                    ),
-                  ],
-                )
-              ],
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black38,
+              blurRadius: 30,
+              offset: Offset(1.0, 9.0),
             ),
-          ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: 30,
+            ),
+            Expanded(
+              flex: 3,
+              child: Text(
+                title,
+                style: TextStyle(fontSize: TEXT_SMALL_SIZE, color: Colors.grey),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isDense: true,
+                  style: TextStyle(
+                    fontSize: TEXT_NORMAL_SIZE,
+                    color: Colors.black,
+                  ),
+                  isExpanded: true,
+                  onChanged: changeDropDownLocationItem,
+                  items: _repeatArray.map((items) {
+                    return DropdownMenuItem<String>(
+                      value: items,
+                      child: Text(
+                        items,
+                      ),
+                    );
+                  }).toList(),
+                  value: currentLocation,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
-
   }
 
-
-  _showDatePicker() {
-      //获取异步方法里面的值的第一种方式：then
-      showDatePicker(
-        //如下四个参数为必填参数
-        context: context,
-        
-        initialDate: _selectedDate, //选中的日期
-        firstDate: DateTime(1980), //日期选择器上可选择的最早日期
-        lastDate: DateTime(2100), //日期选择器上可选择的最晚日期
-      ).then((selectedValue) {
-        setState(() {
-          //将选中的值传递出来
-          if (selectedValue != null) {
-            this._selectedDate = selectedValue;
-          }
-        });
-      }).catchError((error) {
-        print(error);
-      });
-    }
-
-  _showTimePicker() {
-    showTimePicker(
-      context: context,
-      initialTime: _selectedTime
-    ).then((selectedValue) {
-      setState(() {
-        //将选中的值传递出来
-        if (selectedValue != null) {
-          this._selectedTime = selectedValue;
-        }
-      });
-    }).catchError((error) {
-      print(error);
-    });
-  }
-
-
-
-    // Save to database
-    _saveReminder() async {
-      //Record remind time
-      final dt = DateTime(_selectedDate.year, _selectedDate.month, 
-                          _selectedDate.day, _selectedTime.hour, _selectedTime.minute);
-      final format = new DateFormat('yyyy-MM-dd HH:mm:ss');
-      
-      String _remindTime = format.format(dt);
-      //Which user sets the reminder
-      String email = await getUserEmail();
-      _remindTime = _remindTime.replaceAll(' ', 'T');
-      var url = rt.Global.serverUrl + '/savereminder';
-      var response = await http.post(
-        Uri.encodeFull(url),
-        body: json.encode({
-            'email' : email,
-            'remindText' : _reminderTitle,
-            'remindTime' : _remindTime,
-            'repetition' : _repeatTimes
-          }
+  Widget shadowColorBox(
+      Gradient gradient, String title) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 30.0,
+        right: 30,
+        bottom: 8,
+      ),
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black38,
+              blurRadius: 30,
+              offset: Offset(1.0, 9.0),
+            ),
+          ],
         ),
-        headers: {
-          "content-type" : "application/json",
-          "accept" : "application/json",
-        }
-      );
-      var data = jsonDecode(response.body.toString());
-      var code = data['status'];
-      if (code != 200) {
-        return showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    SizedBox(height: 15),
-                    Text('Failed to set a reminder', style: TextStyle(fontSize: 20),),
-                  ],
-                ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: 30,
+            ),
+            Expanded(
+              flex: 3,
+              child: Text(
+                title,
+                style: TextStyle(fontSize: TEXT_SMALL_SIZE, color: Colors.grey),
               ),
-              actions: <Widget>[
-                new FlatButton(
-                  child: new Text('Confirm', style: TextStyle(color: Colors.white),),
-                  onPressed: () {},
-                  color: Colors.blueGrey,
-                )
-              ],
-            );
-          }
-        );
-      } else {
-        Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-          builder: (BuildContext buildContext) {
-            return MyHomePage();
-          }
-        ), (route) => route == null);
-      }
-    }
- 
-    //A sheet containing repeat selections
-    void _addActivities() {
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Stack(
-            children: <Widget>[
-              Container(
-                height: 25,
-                width: double.infinity,
-                color: Colors.black54,
-              ),
-              Container(
-                height: 280,
-                width: double.infinity,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: tiles  //呼出提醒列表
+            ),
+            Expanded(
+              flex: 2,
+              child: Wrap(
+                children: <Widget>[
+                  SizedBox(
+                    width: 15,
                   ),
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25)
-                  )
-                ),
+                  CupertinoSwitch(
+                    value: _switchSelected,
+                    activeColor: Color(0xffabecd6),
+                    onChanged: (value) {
+                      setState(() {
+                        _switchSelected = value;
+                        // Change _visible(Set remind time)
+                        _invisible = value;
+                      });
+                    },
+                  ),
+                ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget fieldColorBox(Gradient gradient, String title,
+      TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 30.0,
+        right: 30,
+        bottom: 8,
+      ),
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black38,
+              blurRadius: 30,
+              offset: Offset(1.0, 9.0),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: 30,
+            ),
+            Expanded(
+              flex: 3,
+              child: Text(
+                title,
+                style: TextStyle(fontSize: TEXT_SMALL_SIZE, color: Colors.grey),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Wrap(
+                children: <Widget>[
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(
+                            fontSize: TEXT_NORMAL_SIZE, color: Colors.black)),
+                    onChanged: (value) {
+                      setState(() {
+                        _remindText = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget dateColorBox(
+      Gradient gradient, String title, 
+      String date, Function dateFunction, 
+      String time, Function timeFunction) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 30.0,
+        right: 30,
+        bottom: 8,
+      ),
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: 30,
+            ),
+            Expanded(
+              flex: 3,
+              child: Text(
+                title,
+                style: TextStyle(fontSize: TEXT_SMALL_SIZE, color: Colors.grey),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Wrap(
+                children: <Widget>[
+                  FlatButton(
+                    child: Text(
+                      date,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onPressed: dateFunction,
+                  ),
+                ],
+              ),
+            ),
+            Offstage(
+              offstage: _invisible,
+              child: FlatButton(
+                child: Text(
+                  time,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onPressed: timeFunction,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget nexButton(String text) {
+    return InkWell(
+      child: Container(
+        alignment: Alignment.center,
+        height: 45,
+        width: 120,
+        decoration: BoxDecoration(
+          gradient: SIGNUP_CIRCLE_BUTTON_BACKGROUND,
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: YELLOW,
+            fontWeight: FontWeight.w700,
+            fontSize: TEXT_NORMAL_SIZE,
+          ),
+        ),
+      ),
+      onTap: () {
+        if (_remindText == null) {
+          _showErrorWidget('Please enter reminder name');
+        } else if (_selectedDate == null) {
+          _showErrorWidget('Please when to remind you');
+        } else {
+          return _saveReminder();
+        }
+      },
+    );
+  }
+
+  // Save to database
+  _saveReminder() async {
+    //Record remind time
+    final dt = DateTime(_selectedDate.year, _selectedDate.month, 
+                        _selectedDate.day, _selectedTime.hour, _selectedTime.minute);
+    final format = new DateFormat('yyyy-MM-dd HH:mm:ss');
+    
+    String _remindTime = format.format(dt);
+    //Which user sets the reminder
+    String email = await getUserEmail();
+    _remindTime = _remindTime.replaceAll(' ', 'T');
+    var url = rt.Global.serverUrl + '/savereminder';
+    var response = await http.post(
+      Uri.encodeFull(url),
+      body: json.encode({
+          'email' : email,
+          'remindText' : _remindText,
+          'remindTime' : _remindTime,
+          'repetition' : _repetition
+        }
+      ),
+      headers: {
+        "content-type" : "application/json",
+        "accept" : "application/json",
+      }
+    );
+    var data = jsonDecode(response.body.toString());
+    var code = data['status'];
+    if (code != 200) {
+      return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  SizedBox(height: 15),
+                  Text('Failed to set a reminder', style: TextStyle(fontSize: 20),),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('Confirm', style: TextStyle(color: Colors.white),),
+                onPressed: () {},
+                color: Colors.blueGrey,
+              )
             ],
           );
         }
       );
+    } else {
+      Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+        builder: (BuildContext buildContext) {
+          return MyHomePage();
+        }
+      ), (route) => route == null);
     }
+  }
 }
-

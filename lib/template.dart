@@ -84,11 +84,9 @@ Future getImage() async {
 
       request.files.add(multipartFile);
       var response = await request.send();
-      print(response.statusCode);
+
       String _responseString;
-      response.stream.transform(utf8.decoder).listen((value) {
-        _responseString = value;
-      });
+      
       // Parse returned string to json
       var _responseJson = jsonDecode(_responseString);
       
