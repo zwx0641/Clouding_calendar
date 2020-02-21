@@ -85,7 +85,7 @@ class _SignupPageState extends State<SignupPage> {
                 Positioned(
                   bottom: 16.0,
                   right: 18.9,
-                  child: signupButton('NEXT'),
+                  child: signupButton('REGISTER'),
                 ),
               ],
             ),

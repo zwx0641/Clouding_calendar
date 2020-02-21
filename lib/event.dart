@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:clouding_calendar/const/color_const.dart';
 import 'package:clouding_calendar/const/gradient_const.dart';
 import 'package:clouding_calendar/main.dart';
 import 'package:clouding_calendar/userServices.dart';
+import 'package:clouding_calendar/widget/signup_apbar.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,6 +14,7 @@ import 'package:clouding_calendar/routes.dart' as rt;
 import 'package:http/http.dart' as http;
 
 import 'common/app_theme.dart';
+import 'const/size_const.dart';
 
 String _eventName, _location, _remark;
 DateTime _selectedFromDate;
@@ -165,34 +168,29 @@ class _EventPageState extends State<EventPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    final _media = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        centerTitle: true,
-        title: Text(
-          "Add New Event",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
-        ),
-        elevation: 0.0,
+      appBar: SignupApbar(
+        title: "CREATE REMINDER",
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: SIGNUP_BACKGROUND,
-          
-        ),
-        child: Provider.value(
-          
-          child: ListView(
+      body: Stack(
+        children: <Widget>[
+          Container(
+            height: _media.height,
+            width: _media.width,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  'images/signup_page_11_bg.png',
+                ),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          ListView(
             padding: EdgeInsets.symmetric(
               horizontal: 25,
             ),
@@ -358,26 +356,26 @@ class _EventPageState extends State<EventPage> {
                 child: Container(
                   width: 200,
                   height: 60,
-                  child: FlatButton(
-                    color: Colors.purple[100],
-                    shape: StadiumBorder(),
-                    child: Center(
+                  child: InkWell(
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 45,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        gradient: SIGNUP_CIRCLE_BUTTON_BACKGROUND,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
                       child: Text(
-                        "Confirm",
+                        'Confirm',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
+                          color: YELLOW,
                           fontWeight: FontWeight.w700,
+                          fontSize: TEXT_NORMAL_SIZE,
+                          fontFamily: 'Montserrat'
                         ),
                       ),
                     ),
-                    onPressed: () {
-                      
-                      //--------------------Error Checking------------------------
-                      //Had to do error checking in UI
-                      //Due to unoptimized BLoC value-grabbing architecture
-                   
-                      //---------------------------------------------------------
+                    onTap: () {
                       if (_eventName == null) {
                         showErrorWidget('Please enter event name');
                       } else if (_repetition == -1) {
@@ -392,9 +390,12 @@ class _EventPageState extends State<EventPage> {
                 ),
               ),
             ],
-          ), value: null,
+         
         ),
+        ],
       ),
+        
+      
     );
   }
 
@@ -611,13 +612,15 @@ class _SelectDateTimeState extends State<SelectDateTime> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            FlatButton(
-              color: Colors.purple[100],
-              shape: StadiumBorder(),
-              onPressed: () {
-                _selectDate(context);
-              },
-              child: Center(
+            InkWell(
+              child: Container(
+                alignment: Alignment.center,
+                height: 45,
+                width: 120,
+                decoration: BoxDecoration(
+                  gradient: SIGNUP_CIRCLE_BUTTON_BACKGROUND,
+                  borderRadius: BorderRadius.circular(50),
+                ),
                 child: Text(
                   _dateClicked == false
                       ? "Pick Date"
@@ -626,33 +629,44 @@ class _SelectDateTimeState extends State<SelectDateTime> {
                                   : _selectedEndDate, [yyyy, '-', mm, '-', 'dd']
                         ),
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
+                    color: YELLOW,
+                    fontWeight: FontWeight.w700,
+                    fontSize: TEXT_NORMAL_SIZE,
+                    fontFamily: 'Montserrat'
                   ),
                 ),
               ),
-            ),
-            FlatButton(
-              color: Colors.purple[100],
-              shape: StadiumBorder(),
-              onPressed: () {
-                _selectTime(context);
+              onTap: () {
+                _selectDate(context);
               },
-              child: Center(
+            ),
+            InkWell(
+              child: Container(
+                alignment: Alignment.center,
+                height: 45,
+                width: 120,
+                decoration: BoxDecoration(
+                  gradient: SIGNUP_CIRCLE_BUTTON_BACKGROUND,
+                  borderRadius: BorderRadius.circular(50),
+                ),
                 child: Text(
                   _timeClicked == false
                       ? "Pick Time"
                       : type == 1 ? '${_selectedFromTime.format(context)}' 
                                   : '${_selectedEndTime.format(context)}',
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
+                    color: YELLOW,
+                    fontWeight: FontWeight.w700,
+                    fontSize: TEXT_NORMAL_SIZE,
+                    fontFamily: 'Montserrat'
                   ),
                 ),
               ),
-            )
+              onTap: () {
+                _selectTime(context);
+              },
+            ),
+            
           ],
         ),
       ),
@@ -694,18 +708,14 @@ class RepeatTypeColumn extends StatelessWidget {
         children: <Widget>[
           Container(
             width: 68,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              gradient: SIGNUP_CARD_BACKGROUND,
-              color: isSelected ? Colors.purple[100] : Colors.white,
-            ),
+            
             child: Center(
               child: Padding(
                 padding: EdgeInsets.only(top: 14.0),
                 child: Icon(
                   iconValue,
                   size: 58,
-                  color: isSelected ? Colors.white : Colors.purple[100],
+                  color: YELLOW,
                 ),
               ),
             ),
@@ -716,7 +726,7 @@ class RepeatTypeColumn extends StatelessWidget {
               width: 63,
               height: 30,
               decoration: BoxDecoration(
-                color: isSelected ? Colors.purple[100] : Colors.transparent,
+                color: isSelected ? YELLOW : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
@@ -724,8 +734,9 @@ class RepeatTypeColumn extends StatelessWidget {
                   name,
                   style: TextStyle(
                     fontSize: 12,
-                    color: isSelected ? Colors.white : Colors.purple[100],
+                    color: isSelected ? Colors.black : Colors.yellow,
                     fontWeight: FontWeight.w500,
+                    fontFamily: 'Montserrat'
                   ),
                 ),
               ),

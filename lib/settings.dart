@@ -1,3 +1,5 @@
+import 'package:clouding_calendar/changePass.dart';
+import 'package:clouding_calendar/custom_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'common/appInfo.dart';
@@ -113,7 +115,55 @@ class _SettingPageState extends State<SettingPage> {
                 Icon(Icons.keyboard_arrow_right)
               ],
             ),
-          )
+          ),
+          ExpansionTile(
+            leading: Icon(Icons.lock),
+            title: Text('Change password'),
+            initiallyExpanded: false,
+            children: <Widget>[
+              Material(
+                color: Colors.transparent,
+                child: Center(
+                  child: Container(
+                    width: 120,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(4.0)),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.grey.withOpacity(0.6),
+                            offset: const Offset(4, 4),
+                            blurRadius: 8.0),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          Navigator.push(context, new CustomRoute(ChangePassPage()));
+                        },
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text(
+                              'Change',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -22,7 +22,7 @@ class SignupApbar extends StatelessWidget implements PreferredSizeWidget {
         leading: Align(
           alignment: Alignment(-0.5, 4),
           child: SignUpArrowButton(
-            onTap: () => Navigator.popAndPushNamed(context, 'signinRoute'),
+            onTap: () => Navigator.of(context).pop(),
             icon: IconData(
               arrow_left,
               fontFamily: "Icons",
@@ -35,7 +35,7 @@ class SignupApbar extends StatelessWidget implements PreferredSizeWidget {
         centerMiddle: true,
         middle: Text(
           title,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),
         ),
       ),
     );

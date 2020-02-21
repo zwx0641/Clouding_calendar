@@ -285,8 +285,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               FutureBuilder(
                 future: getUserVO(),
                 builder: (context, snapshot) {
-                  
-                  
                   return header(snapshot.data['email'], snapshot.data['face_image']);
                 },
               ),
@@ -644,7 +642,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         gravity: ToastGravity.CENTER
       );
       // Delete local cache
-      deleteGloabalUserInfo();
+      //deleteGloabalUserInfo();
       // Set user state as logout
       setUserLoginState(false);
       Navigator.popAndPushNamed(context, 'signinRoute');

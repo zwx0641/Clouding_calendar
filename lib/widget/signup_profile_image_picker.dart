@@ -14,14 +14,14 @@ class ProfileImagePicker extends StatefulWidget {
 }
 
 class _ProfileImagePickerState extends State<ProfileImagePicker> {
-  File _image;
+  File avatar;
 
   Future getImage() async {
     try {
       File image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
       setState(() {
-        _image = image;
+        avatar = image;
       });
     } catch (e) {}
   }
@@ -47,9 +47,9 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
-              child: _image != null
+              child: avatar != null
                   ? Image.file(
-                      _image,
+                      avatar,
                       fit: BoxFit.contain,
                     )
                   : Image.asset(

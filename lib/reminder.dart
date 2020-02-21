@@ -186,7 +186,7 @@ class _ReminderPageState extends State<ReminderPage> {
               flex: 3,
               child: Text(
                 title,
-                style: TextStyle(fontSize: TEXT_SMALL_SIZE, color: Colors.grey),
+                style: TextStyle(fontSize: TEXT_SMALL_SIZE, color: Colors.grey, fontFamily: 'Montserrat'),
               ),
             ),
             Expanded(
@@ -195,8 +195,9 @@ class _ReminderPageState extends State<ReminderPage> {
                 child: DropdownButton<String>(
                   isDense: true,
                   style: TextStyle(
-                    fontSize: TEXT_NORMAL_SIZE,
+                    fontSize: 12,
                     color: Colors.black,
+                    fontFamily: 'Montserrat'
                   ),
                   isExpanded: true,
                   onChanged: changeDropDownLocationItem,
@@ -364,7 +365,7 @@ class _ReminderPageState extends State<ReminderPage> {
               flex: 3,
               child: Text(
                 title,
-                style: TextStyle(fontSize: TEXT_SMALL_SIZE, color: Colors.grey),
+                style: TextStyle(fontSize: TEXT_SMALL_SIZE, color: Colors.grey, fontFamily: 'Montserrat'),
               ),
             ),
             Expanded(
@@ -378,6 +379,7 @@ class _ReminderPageState extends State<ReminderPage> {
                         fontSize: 12,
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
+                        fontFamily: 'Montserrat'
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -395,6 +397,7 @@ class _ReminderPageState extends State<ReminderPage> {
                     fontSize: 12,
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
+                    fontFamily: 'Montserrat'
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -423,6 +426,7 @@ class _ReminderPageState extends State<ReminderPage> {
             color: YELLOW,
             fontWeight: FontWeight.w700,
             fontSize: TEXT_NORMAL_SIZE,
+            fontFamily: 'Montserrat'
           ),
         ),
       ),
