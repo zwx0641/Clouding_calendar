@@ -9,3 +9,6 @@ path_provider=C:\\dev\\flutter\\.pub-cache\\hosted\\pub.flutter-io.cn\\path_prov
 shared_preferences=C:\\dev\\flutter\\.pub-cache\\hosted\\pub.flutter-io.cn\\shared_preferences-0.5.6\\
 shared_preferences_macos=C:\\dev\\flutter\\.pub-cache\\hosted\\pub.flutter-io.cn\\shared_preferences_macos-0.0.1+4\\
 shared_preferences_web=C:\\dev\\flutter\\.pub-cache\\hosted\\pub.flutter-io.cn\\shared_preferences_web-0.1.2+3\\
+url_launcher=C:\\dev\\flutter\\.pub-cache\\hosted\\pub.flutter-io.cn\\url_launcher-5.4.1\\
+url_launcher_macos=C:\\dev\\flutter\\.pub-cache\\hosted\\pub.flutter-io.cn\\url_launcher_macos-0.0.1+2\\
+url_launcher_web=C:\\dev\\flutter\\.pub-cache\\hosted\\pub.flutter-io.cn\\url_launcher_web-0.1.1\\

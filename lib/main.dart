@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:clouding_calendar/about_page.dart';
 import 'package:clouding_calendar/const/gradient_const.dart';
 import 'package:clouding_calendar/const/styles.dart';
 import 'package:clouding_calendar/signin.dart';
@@ -345,6 +346,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 leading: new CircleAvatar(child: new Icon(Icons.feedback),),
                 onTap: () {
                   Navigator.push(context, new CustomRoute(FeedbackPage(title: 'Feedbacks')));
+                },
+              ),
+              ListTile(
+                title: Text('About', style: hintAndValueStyle,),
+                leading: new CircleAvatar(child: new Icon(Icons.info),),
+                onTap: () {
+                  Navigator.push(context, new CustomRoute(MyAboutPage()));
                 },
               ),
               ListTile(

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:clouding_calendar/const/gradient_const.dart';
+
 import 'main.dart';
 import 'package:clouding_calendar/userServices.dart';
 import 'package:flutter/cupertino.dart';
@@ -114,110 +116,113 @@ class _ReminderPageState extends State<ReminderPage> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
-        child: Form(
-          
-          child: Column(
-            children: <Widget>[
-              // Title
-              TextField(
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  hintStyle: new TextStyle(fontSize: 20),
-                  hintText: 'Reminde me of ...',
-                  prefixIcon: Icon(Icons.add, color: Colors.white),
-                  border: InputBorder.none,
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _reminderTitle = value;
-                  });
-                },
-              ),
-          
-              Column(
-                children: <Widget>[
-                  // All day?
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Icon(Icons.query_builder),
-                      Text('All day', style: TextStyle(fontSize: 18)),
-                      CupertinoSwitch(
-                        value: _switchSelected,
-                        activeColor: Colors.purple[100],
-                        onChanged: (value) {
-                          setState(() {
-                            _switchSelected = value;
-                            // Change _visible(Set remind time)
-                            _invisible = value;
-                          });
-                        },
-                      )
-                    ],
+      body: Container(
+        decoration: BoxDecoration(gradient: SIGNUP_BACKGROUND),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
+          child: Form(
+            
+            child: Column(
+              children: <Widget>[
+                // Title
+                TextField(
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintStyle: new TextStyle(fontSize: 20),
+                    hintText: 'Reminde me of ...',
+                    prefixIcon: Icon(Icons.add, color: Colors.white),
+                    border: InputBorder.none,
                   ),
-                  SizedBox(height: 10, width: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // Time selection
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          _showDatePicker();
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(formatDate(this._selectedDate, [yyyy, '-', mm, '-', 'dd'])),
-                            Icon(Icons.arrow_drop_down)
-                          ],
-                        ),
-                      ),
-                      Offstage(
-                        offstage: _invisible,
-                        child: InkWell(
+                  onChanged: (value) {
+                    setState(() {
+                      _reminderTitle = value;
+                    });
+                  },
+                ),
+            
+                Column(
+                  children: <Widget>[
+                    // All day?
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Icon(Icons.query_builder),
+                        Text('All day', style: TextStyle(fontSize: 18)),
+                        CupertinoSwitch(
+                          value: _switchSelected,
+                          activeColor: Colors.purple[100],
+                          onChanged: (value) {
+                            setState(() {
+                              _switchSelected = value;
+                              // Change _visible(Set remind time)
+                              _invisible = value;
+                            });
+                          },
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 10, width: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      // Time selection
+                      children: <Widget>[
+                        InkWell(
                           onTap: () {
-                            _showTimePicker();
+                            _showDatePicker();
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text('${this._selectedTime.format(context)}'),
+                              Text(formatDate(this._selectedDate, [yyyy, '-', mm, '-', 'dd'])),
                               Icon(Icons.arrow_drop_down)
                             ],
                           ),
+                        ),
+                        Offstage(
+                          offstage: _invisible,
+                          child: InkWell(
+                            onTap: () {
+                              _showTimePicker();
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text('${this._selectedTime.format(context)}'),
+                                Icon(Icons.arrow_drop_down)
+                              ],
+                            ),
+                          )
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10, width: 10),
+                    //提醒次数
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Icon(Icons.replay),
+                        GestureDetector(
+                          child: Text(_repeatsMsg, style: TextStyle(fontSize: 18)),
+                          onTap: _addActivities
+                        ),
+                        IgnorePointer(
+                          ignoring: true,
+                          child: new Opacity(
+                            opacity: 0.0,
+                            child: CupertinoSwitch(
+                              value: _switchSelected, onChanged: (bool value) {},
+                            ),
+                          )
                         )
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10, width: 10),
-                  //提醒次数
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Icon(Icons.replay),
-                      GestureDetector(
-                        child: Text(_repeatsMsg, style: TextStyle(fontSize: 18)),
-                        onTap: _addActivities
-                      ),
-                      IgnorePointer(
-                        ignoring: true,
-                        child: new Opacity(
-                          opacity: 0.0,
-                          child: CupertinoSwitch(
-                            value: _switchSelected, onChanged: (bool value) {},
-                          ),
-                        )
-                      )
-                    ],
-                  ),
-                ],
-              )
-            ],
+                      ],
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
-      )
+      ),
     );
 
   }

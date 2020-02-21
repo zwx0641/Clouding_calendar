@@ -30,6 +30,8 @@ dependencies:
   flutter_email_sender: ^2.2.2
   intro_views_flutter: ^2.8.0
   google_places_picker: ^0.0.9
+  eva_icons_flutter: ^2.0.0
+  url_launcher: ^5.2.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -104,6 +106,23 @@ flutter:
     - family: Icons
       fonts:
         - asset: fonts/icons.ttf
+    - family: Rubik
+      fonts:
+        - asset: fonts/Rubik/Rubik-Regular.ttf
+        - asset: fonts/Rubik/Rubik-Medium.ttf
+        - asset: fonts/Rubik/Rubik-Bold.ttf
+        - asset: fonts/Rubik/Rubik-Italic.ttf
+          style: italic
+    - family: RobotoMono
+      fonts:
+        - asset: fonts/RobotoMono/RobotoMono-Regular.ttf
+        - asset: fonts/RobotoMono/RobotoMono-Medium.ttf
+        - asset: fonts/RobotoMono/RobotoMono-Bold.ttf
+    - family: Quicksand
+      fonts:
+        - asset: fonts/Quicksand/Quicksand-Regular.ttf
+        - asset: fonts/Quicksand/Quicksand-Medium.ttf
+        - asset: fonts/Quicksand/Quicksand-Bold.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
