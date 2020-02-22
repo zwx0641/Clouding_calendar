@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 import 'package:clouding_calendar/userServices.dart';
+import 'package:clouding_calendar/widgets/errorDialog.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'const/gradient_const.dart';
@@ -131,14 +132,6 @@ class _SigninPageState extends State<SigninPage> {
             hintText: 'Email',
             hintStyle: hintAndValueStyle),
         onChanged: (value) => _email = value,
-        validator: (value) {
-          var emailReg = RegExp(
-           r"[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?"
-          );
-          if (!emailReg.hasMatch(value)) {
-            return 'Please enter the correct email address!';
-          }
-        },
       ),
     );
   }
@@ -182,6 +175,14 @@ class _SigninPageState extends State<SigninPage> {
         children: <Widget>[
           InkWell(
             onTap: () {
+              var emailReg = RegExp(
+              r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
+              if (!emailReg.hasMatch(_email)) {
+                return _showErrorDialog('Caution', 'Incorrect email form');
+              }
+              if (_email.isEmpty || _password.isEmpty) {
+                return _showErrorDialog('Caution', 'Please complete all fields');
+              }
               sendPost();
             },
             child: Container(
@@ -238,7 +239,7 @@ class _SigninPageState extends State<SigninPage> {
     if (_code == 200) {
       var user = data['data'];
               
-      //存id到本地储存
+      // Save id to local cache
       setGlobalUserInfo(user['id']);
       setUserEmail(user['email']);
       setUserLoginState(true);
@@ -255,34 +256,16 @@ class _SigninPageState extends State<SigninPage> {
       ), (route) => route == null);
       
     } else {
-      return _showErrorWidget(_hintMessage);
+      return _showErrorDialog('Error', _hintMessage);
     }
   }
 
-  Future<Widget> _showErrorWidget(String msg) {
+  Future<Widget> _showErrorDialog(String title, String msg) {
     return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                SizedBox(height: 15),
-                Text(msg, style: TextStyle(fontSize: 17),),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text('Confirm', style: TextStyle(color: Colors.white),),
-              onPressed: () {
-                Navigator.of(context).pop();
-                },
-              color: Colors.blueGrey,
-            )
-          ],
-        );
+      builder: (context) {
+        return ErrorDialog(title: title, message: msg);
       }
     );
   }

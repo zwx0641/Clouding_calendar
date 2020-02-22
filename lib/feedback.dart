@@ -34,7 +34,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
         centerTitle: true,
       ),
       body: Container(
-        color: AppTheme.nearlyWhite,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+              widget.title == 'Feedbacks' ? 'images/pic02.png' : 'images/pic09.png'
+            ),
+            fit: BoxFit.fill
+          )
+        ),
         child: SafeArea(
           top: false,
           child: Scaffold(
@@ -59,6 +66,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat'
                         ),
                       ),
                     ),
@@ -69,6 +77,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
+                          fontFamily: 'Montserrat'
                         ),
                       ),
                     ),
@@ -106,6 +115,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       color: Colors.white,
+                                      fontFamily: 'Montserrat'
                                     ),
                                   ),
                                 ),
@@ -154,7 +164,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   _emailBody = txt;
                 },
                 style: TextStyle(
-                  fontFamily: AppTheme.fontName,
+                  fontFamily: 'Montserrat',
                   fontSize: 16,
                   color: AppTheme.dark_grey,
                 ),

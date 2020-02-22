@@ -2,7 +2,9 @@
 import 'dart:convert';
 import 'package:clouding_calendar/signin.dart';
 import 'package:clouding_calendar/userServices.dart';
+import 'package:clouding_calendar/widgets/errorDialog.dart';
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'const/gradient_const.dart';
 import 'const/styles.dart';
@@ -79,7 +81,7 @@ class _ChangePassPageState extends State<ChangePassPage> {
   Widget passwordTextFieldWidget() {
     return Container(
       margin: EdgeInsets.only(left: 32.0, right: 16.0),
-      child: TextField(
+      child: TextFormField(
         style: hintAndValueStyle,
         obscureText: true,
         decoration: new InputDecoration(
@@ -91,6 +93,15 @@ class _ChangePassPageState extends State<ChangePassPage> {
                 borderSide: BorderSide.none),
             hintText: 'New Password',
             hintStyle: hintAndValueStyle),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Please enter your new password';
+            }
+            var passReg = RegExp('[a-z,A-Z,0-9]');
+            if (!passReg.hasMatch(value)) {
+              return 'Password should contain both letters and numbers';
+            }
+          },
           onChanged: (value) => _newPass = value,
       ),
     );
@@ -176,6 +187,12 @@ class _ChangePassPageState extends State<ChangePassPage> {
         children: <Widget>[
           InkWell(
             onTap: () {
+              var passReg = RegExp(
+              r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$");
+              if (!passReg.hasMatch(_newPass)) {
+                return _showErrorDialog('Caution', 
+                'From 8 to 16 digits. At least 1 capital, 1 lower-case, 1 number');
+              }
               sendPost();
             },
             child: Container(
@@ -214,6 +231,9 @@ class _ChangePassPageState extends State<ChangePassPage> {
 
   //Login方法，与后端交互
   Future<Widget> sendPost() async {
+    if (_newPass.length < 8) {
+      return _showErrorDialog('Caution', 'Password should be more than 8 digits');
+    }
     String userId = await getGlobalUserInfo();
     var url = rt.Global.serverUrl + '/user/passchange?userId=' + userId 
               + '&formerPass=' + _formerPass + '&newPass=' + _newPass;
@@ -244,9 +264,9 @@ class _ChangePassPageState extends State<ChangePassPage> {
       ), (route) => route == null);
       
     } else if (_code == 404) {
-      return _showErrorWidget('Server Error');
+      return _showErrorDialog('Error', 'Server Error');
     } else {
-      return _showErrorWidget(_hintMessage);
+      return _showErrorDialog('Error', _hintMessage);
     }
   }
 
@@ -279,30 +299,12 @@ class _ChangePassPageState extends State<ChangePassPage> {
     }
   }
 
-  Future<Widget> _showErrorWidget(String msg) {
+  Future<Widget> _showErrorDialog(String title, String msg) {
     return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                SizedBox(height: 15),
-                Text(msg, style: TextStyle(fontSize: 17),),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text('Confirm', style: TextStyle(color: Colors.white),),
-              onPressed: () {
-                Navigator.of(context).pop();
-                },
-              color: Colors.blueGrey,
-            )
-          ],
-        );
+      builder: (context) {
+        return ErrorDialog(title: title, message: msg);
       }
     );
   }

@@ -49,21 +49,23 @@ class EventDetails extends StatelessWidget {
             resizeToAvoidBottomPadding: false,
             backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: Colors.white,
-              iconTheme: IconThemeData(
-                color: _themeColor,
-              ),
-              centerTitle: true,
               title: Text(
-                "Reminder Details",
+                "Event Details",
                 style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
+                  fontFamily: 'Montserrat'
                 ),
               ),
               elevation: 0.0,
             ),
             body: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    'images/pic06.png'
+                  ),
+                  fit: BoxFit.fill
+                )
+              ),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
                 child: SingleChildScrollView(

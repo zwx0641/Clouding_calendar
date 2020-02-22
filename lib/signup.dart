@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:clouding_calendar/userServices.dart';
+import 'package:clouding_calendar/widgets/errorDialog.dart';
 import 'package:flutter/material.dart';
 import 'widget/signup_apbar.dart';
 import 'const/gradient_const.dart';
@@ -95,11 +96,17 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  TextField textField(String labelText, bool obscureText, int which) {
-    return TextField(
+  TextFormField textField(String labelText, bool obscureText, int which) {
+    return TextFormField(
       style: hintAndValueStyle,
       obscureText: obscureText,
       decoration: new InputDecoration(
+          hintText: which == 2 ? 'From 8 to 16 digits. At least 1 capital, 1 lower case, 1 number' : '',
+          hintStyle: TextStyle(
+            color: Color(0xff353535),
+              fontWeight: FontWeight.normal,
+              fontSize: 9.0
+          ),
           labelText: labelText,
           labelStyle: TextStyle(
               color: Color(0xff353535),
@@ -128,8 +135,21 @@ class _SignupPageState extends State<SignupPage> {
   Widget signupButton(title) {
     return InkWell(
       onTap: () {
+        var emailReg = RegExp(
+        r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
+        var passReg = RegExp(
+          r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$");
+        if (_username.isEmpty || _email.isEmpty || _password.isEmpty || _repeatPassword.isEmpty) {
+          return _showErrorDialog('Caution', 'Please complete all fields');
+        }
+        if (!emailReg.hasMatch(_email)) {
+          return _showErrorDialog('Caution', 'Incorrect email form');
+        }
+        if (!passReg.hasMatch(_password)) {
+          return _showErrorDialog('Caution', 'From 8 to 16 digits. At least 1 capital, 1 lower case, 1 number');
+        }
         if (_password != _repeatPassword) {
-          return _showErrorWidget('Inconsistent passwords');
+          return _showErrorDialog('Caution', 'Inconsistent passwords');
         }
         return sendPost();
       },
@@ -167,6 +187,7 @@ class _SignupPageState extends State<SignupPage> {
     // Registration, uses POST
   Future<Widget> sendPost() async {
     var url = rt.Global.serverUrl + '/register';
+    
     var response = await http.post(
       Uri.encodeFull(url),
       body: json.encode({
@@ -189,34 +210,16 @@ class _SignupPageState extends State<SignupPage> {
       setUserLoginState(true);
       Navigator.popAndPushNamed(context, 'signinRoute');
     } else {
-      return _showErrorWidget(_hintMessage);
+      return _showErrorDialog('Error', _hintMessage);
     }
   }
 
-  Future<Widget> _showErrorWidget(String msg) {
+  Future<Widget> _showErrorDialog(String title, String msg) {
     return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                SizedBox(height: 15),
-                Text(msg, style: TextStyle(fontSize: 20),),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text('Confirm', style: TextStyle(color: Colors.white),),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              color: Colors.blueGrey,
-            )
-          ],
-        );
+      builder: (context) {
+        return ErrorDialog(title: title, message: msg);
       }
     );
   }

@@ -41,12 +41,21 @@ class _SettingPageState extends State<SettingPage> {
         title: Text('Settings'),
         centerTitle: true,
       ),
-      body: ListView(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+              'images/pic02.png'
+            ),
+            fit: BoxFit.fill
+          )
+        ),
+        child: ListView(
         children: <Widget>[
           ExpansionTile(
             //选择主题
             leading: Icon(Icons.color_lens),
-            title: Text('Themes'),
+            title: Text('Themes', style: TextStyle(fontFamily: 'Montserrat'),),
             initiallyExpanded: true,
             children: <Widget>[
               Padding(
@@ -79,14 +88,14 @@ class _SettingPageState extends State<SettingPage> {
           ExpansionTile(
             //选择语言
             leading: Icon(Icons.language),
-            title: Text('Set calendar form'),
+            title: Text('Set calendar form', style: TextStyle(fontFamily: 'Montserrat'),),
             initiallyExpanded: false,
             children: <Widget>[
               GestureDetector(
                 child: Container(
                   width: 270,
                   height: 40,
-                  child: Text('Square', style: TextStyle(fontSize: 20),),
+                  child: Text('Square', style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),),
                 ),
                 onTap: () {
                   rt.Global.calendarType = 1;
@@ -97,7 +106,7 @@ class _SettingPageState extends State<SettingPage> {
                 child: Container(
                   width: 270,
                   height: 40,
-                  child: Text('Circle', style: TextStyle(fontSize: 20),),
+                  child: Text('Circle', style: TextStyle(fontSize: 20, fontFamily: 'Montserrat'),),
                 ),
                 onTap: () {
                   rt.Global.calendarType = 2;
@@ -110,7 +119,8 @@ class _SettingPageState extends State<SettingPage> {
               children: <Widget>[
                 Text('System default', style: TextStyle(
                   fontSize: 14.0,
-                  color: Colors.grey,
+                  color: Colors.black45,
+                  fontFamily: 'Montserrat'
                 )),
                 Icon(Icons.keyboard_arrow_right)
               ],
@@ -118,7 +128,7 @@ class _SettingPageState extends State<SettingPage> {
           ),
           ExpansionTile(
             leading: Icon(Icons.lock),
-            title: Text('Change password'),
+            title: Text('Change password', style: TextStyle(fontFamily: 'Montserrat')),
             initiallyExpanded: false,
             children: <Widget>[
               Material(
@@ -153,6 +163,7 @@ class _SettingPageState extends State<SettingPage> {
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
+                                fontFamily: 'Montserrat'
                               ),
                             ),
                           ),
@@ -165,6 +176,7 @@ class _SettingPageState extends State<SettingPage> {
             ],
           ),
         ],
+      ),
       ),
     );
   }

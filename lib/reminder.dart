@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:clouding_calendar/main.dart';
 import 'package:clouding_calendar/userServices.dart';
+import 'package:clouding_calendar/widgets/errorDialog.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -129,31 +130,16 @@ class _ReminderPageState extends State<ReminderPage> {
     );
   }
 
-    Future<Widget> _showErrorWidget(String hintMsg) {
-      return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  SizedBox(height: 15),
-                  Text(hintMsg, style: TextStyle(fontSize: 17),),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('Confirm', style: TextStyle(color: Colors.white),),
-                onPressed: () {Navigator.of(context).pop(); },
-                color: Colors.blueGrey,
-              )
-            ],
-          );
-        }
-      );
-    }
+    // A dialog showing errors
+  Future<Widget> _showErrorDialog(String title, String msg) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return ErrorDialog(title: title, message: msg);
+      }
+    );
+  }
 
   Widget locationColorBox(
       Gradient gradient, String title, String currentLocation) {
@@ -432,9 +418,9 @@ class _ReminderPageState extends State<ReminderPage> {
       ),
       onTap: () {
         if (_remindText == null) {
-          _showErrorWidget('Please enter reminder name');
+          _showErrorDialog('Caution', 'Please enter reminder name');
         } else if (_selectedDate == null) {
-          _showErrorWidget('Please when to remind you');
+          _showErrorDialog('Caution', 'Please when to remind you');
         } else {
           return _saveReminder();
         }

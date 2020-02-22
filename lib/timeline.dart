@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:clouding_calendar/const/gradient_const.dart';
 import 'package:clouding_calendar/eventDetails.dart';
 import 'package:clouding_calendar/userServices.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,16 @@ class _TimelinePageState extends State<TimelinePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: FutureBuilder(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                'images/pic01.png',
+              ),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: FutureBuilder(
           future: _getEvent(),
           builder: (context, snap){
               if(!snap.hasData) {
@@ -128,6 +138,7 @@ class _TimelinePageState extends State<TimelinePage> {
                   position: TimelinePosition.Left,
               );
             }
+          ),
         ),
       );
   }

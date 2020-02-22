@@ -5,6 +5,7 @@ import 'package:clouding_calendar/const/gradient_const.dart';
 import 'package:clouding_calendar/main.dart';
 import 'package:clouding_calendar/userServices.dart';
 import 'package:clouding_calendar/widget/signup_apbar.dart';
+import 'package:clouding_calendar/widgets/errorDialog.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -377,11 +378,11 @@ class _EventPageState extends State<EventPage> {
                     ),
                     onTap: () {
                       if (_eventName == null) {
-                        showErrorWidget('Please enter event name');
+                        _showErrorDialog('Caution', 'Please enter event name');
                       } else if (_repetition == -1) {
-                        showErrorWidget('Please select whether to repeat');
+                        _showErrorDialog('Caution', 'Please select whether to repeat');
                       } else if (_eventType == -1) {
-                        showErrorWidget('Please select event type');
+                        _showErrorDialog('Caution', 'Please select event type');
                       } else {
                         _saveEvent();
                       }
@@ -519,32 +520,15 @@ class _EventPageState extends State<EventPage> {
   }
 
   // A dialog showing errors
-  Future<Widget> showErrorWidget(String hintMsg) {
+  Future<Widget> _showErrorDialog(String title, String msg) {
     return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                SizedBox(height: 15),
-                Text(hintMsg, style: TextStyle(fontSize: 17),),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text('Confirm', style: TextStyle(color: Colors.white),),
-              onPressed: () {Navigator.of(context).pop(); },
-              color: Colors.blueGrey,
-            )
-          ],
-        );
+      builder: (context) {
+        return ErrorDialog(title: title, message: msg);
       }
     );
   }
-
 }
 
 class SelectDateTime extends StatefulWidget {

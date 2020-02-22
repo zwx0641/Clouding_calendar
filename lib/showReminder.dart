@@ -34,21 +34,25 @@ class ReminderDetails extends StatelessWidget {
             resizeToAvoidBottomPadding: false,
             backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: Colors.white,
-              iconTheme: IconThemeData(
-                color: _themeColor,
-              ),
+              
               centerTitle: true,
               title: Text(
                 "Reminder Details",
                 style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
+                  fontFamily: 'Monserrat'
                 ),
               ),
               elevation: 0.0,
             ),
             body: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    'images/pic02.png'
+                  ),
+                  fit: BoxFit.fill
+                )
+              ),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: Column(
@@ -187,7 +191,7 @@ class MainInfoTab extends StatelessWidget {
             fieldTitle,
             style: TextStyle(
                 fontSize: 17,
-                color: Color(0xFFC9C9C9),
+                color: Colors.white,
                 fontWeight: FontWeight.bold),
           ),
           Text(
@@ -261,7 +265,7 @@ class ExtendedInfoTab extends StatelessWidget {
               fieldInfo,
               style: TextStyle(
                 fontSize: 18,
-                color: Color(0xFFC9C9C9),
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),

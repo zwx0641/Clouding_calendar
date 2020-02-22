@@ -24,6 +24,14 @@ class _MyAboutPageState extends State<MyAboutPage> {
     return Scaffold(
       backgroundColor: invertInvertColorsStrong(context),
       body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+              'images/pic02.png'
+            ),
+            fit: BoxFit.fill
+          )
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
