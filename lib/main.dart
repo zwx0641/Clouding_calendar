@@ -19,6 +19,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intro_views_flutter/intro_views_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:clouding_calendar/template.dart';
 import 'common/Sphelper.dart';
@@ -141,6 +142,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   DateTime _remindTime;
   int _repetition;
 
+
   @override
   void initState() {
     super.initState();
@@ -234,41 +236,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     print('CALLBACK: _onVisibleDaysChanged');
   }
 
-//Calendar view button
-  selectView(IconData icon, String text, String id) {
-    return new PopupMenuItem<String>(
-        value: id,
-        child: new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-                new Icon(icon, color: Colors.blue),
-                new Text(text),
-                
-            ],
-        )
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         //Right corner 'setting'
         actions: <Widget>[
-          new PopupMenuButton<String>(
-            itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
-                  this.selectView(Icons.settings, 'Settings', 'A'),
-              ],
-              onSelected: (String action) {
-                  // 点击按钮更换视图
-                  switch (action) {
-                      case 'A': {
-                        Navigator.push(context, new CustomRoute(SettingPage()));
-                      }
-                      break;
-                  }
-              },
-          )
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () {Share.share('Zalendar\n http://github.com/zwx0641');},
+          ),
         ],
         title: Text('A clouding calendar', style: TextStyle(
                 fontSize: 22.0,
@@ -370,9 +347,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         child: FutureBuilder(
           future: getReminderEvent(),
           builder: (context, snapshot) {
-            /* if (!snapshot.hasData) {
-              return CircularProgressIndicator();
-            } */
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -382,9 +356,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                             : _buildTableCalendar(snapshot.data),
                 
                 const SizedBox(height: 8.0),
-                //_buildButtons(),
                 const SizedBox(height: 8.0),
                 Expanded(child: _buildEventList()),
+                
               ],
             );
           },
