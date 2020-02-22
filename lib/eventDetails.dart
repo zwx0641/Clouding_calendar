@@ -61,7 +61,7 @@ class EventDetails extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
-                    'images/pic06.png'
+                    'images/eventbg.jpg'
                   ),
                   fit: BoxFit.fill
                 )
@@ -106,6 +106,7 @@ class EventDetails extends StatelessWidget {
                                   color: Colors.white,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700,
+                                  fontFamily: 'Montserrat'
                                 ),
                               ),
                             ),
@@ -214,15 +215,17 @@ class MainInfoTab extends StatelessWidget {
             fieldTitle,
             style: TextStyle(
                 fontSize: 17,
-                color: Color(0xFFC9C9C9),
-                fontWeight: FontWeight.bold),
+                color: Colors.black54,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Montserrat'),
           ),
           Text(
             fieldInfo,
             style: TextStyle(
                 fontSize: 17,
                 color: _themeColor,
-                fontWeight: FontWeight.bold),
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Montserrat'),
           ),
         ],
       ),
@@ -299,8 +302,9 @@ class ExtendedInfoTab extends StatelessWidget {
                 fieldTitle,
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.black,
+                  color: _themeColor,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Montserrat'
                 ),
               ),
             ),
@@ -308,8 +312,9 @@ class ExtendedInfoTab extends StatelessWidget {
               fieldInfo,
               style: TextStyle(
                 fontSize: 18,
-                color: Color(0xFFC9C9C9),
+                color: Colors.black54,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'Montserrat'
               ),
             ),
           ],

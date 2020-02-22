@@ -61,7 +61,7 @@ class _TimelinePageState extends State<TimelinePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(widget.title, style: TextStyle(fontFamily: 'Montserrat'),),
         ),
         body: Container(
           decoration: BoxDecoration(

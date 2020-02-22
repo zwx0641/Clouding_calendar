@@ -86,6 +86,7 @@ class ReminderDetails extends StatelessWidget {
                                 color: Colors.white,
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
+                                fontFamily: 'Montserrat'
                               ),
                             ),
                           ),
@@ -192,14 +193,16 @@ class MainInfoTab extends StatelessWidget {
             style: TextStyle(
                 fontSize: 17,
                 color: Colors.white,
-                fontWeight: FontWeight.bold),
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Montserrat'),
           ),
           Text(
             fieldInfo,
             style: TextStyle(
                 fontSize: 17,
                 color: _themeColor,
-                fontWeight: FontWeight.bold),
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Montserrat'),
           ),
         ],
       ),
@@ -258,6 +261,7 @@ class ExtendedInfoTab extends StatelessWidget {
                   fontSize: 20,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Montserrat'
                 ),
               ),
             ),
@@ -267,6 +271,7 @@ class ExtendedInfoTab extends StatelessWidget {
                 fontSize: 18,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'Montserrat'
               ),
             ),
           ],

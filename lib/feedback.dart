@@ -30,8 +30,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
           icon: Icon(Icons.arrow_back), 
           onPressed: () {Navigator.pop(context);}
         ),
-        title: Text(widget.title),
-        centerTitle: true,
+        title: Text(widget.title, style: TextStyle(fontFamily: 'Montserrat'),),
       ),
       body: Container(
         decoration: BoxDecoration(
