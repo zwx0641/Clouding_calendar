@@ -28,7 +28,7 @@ class _TimelinePageState extends State<TimelinePage> {
   // Get the details of an event
   Future<List<EventData>> _getEvent() async {
     String email = await getUserEmail();
-    var url = rt.Global.serverUrl + '/queryevent?email=' + email;
+    var url = rt.Global.serverUrl + '/event/query?email=' + email;
     var response = await http.post(
       Uri.encodeFull(url),
       headers: {
@@ -144,7 +144,7 @@ class _TimelinePageState extends State<TimelinePage> {
   }
 
   getEventDetail(String id) async {
-    var url = rt.Global.serverUrl + '/detailevent?id=' + id;
+    var url = rt.Global.serverUrl + '/event/detail?id=' + id;
     var response =  await http.post(
       Uri.encodeFull(url),
       headers: {

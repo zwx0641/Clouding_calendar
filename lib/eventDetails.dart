@@ -126,7 +126,7 @@ class EventDetails extends StatelessWidget {
 
   //删除一个reminder
   deleteEvent(String id) async {
-    var url = rt.Global.serverUrl + '/dropevent?id=' + id;
+    var url = rt.Global.serverUrl + '/event/drop?id=' + id;
     http.post(
       Uri.encodeFull(url),
       headers: {

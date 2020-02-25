@@ -105,7 +105,7 @@ class ReminderDetails extends StatelessWidget {
 
   // Delete a reminder
   deleteReminder(String id) async {
-    var url = rt.Global.serverUrl + '/dropreminder?id=' + id;
+    var url = rt.Global.serverUrl + '/reminder/drop?id=' + id;
     http.post(
       Uri.encodeFull(url),
       headers: {

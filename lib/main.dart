@@ -28,15 +28,7 @@ import 'package:http/http.dart' as http;
 import 'userServices.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'showReminder.dart';
-
-// Example holidays
-final Map<DateTime, List> _holidays = {
-  DateTime(DateTime.now().year, 1, 1): ['New Year\'s Day'],
-  DateTime(DateTime.now().year, 1, 6): ['Epiphany'],
-  DateTime(DateTime.now().year, 2, 14): ['Valentine\'s Day'],
-  DateTime(DateTime.now().year, 4, 21): ['Easter Sunday'],
-  DateTime(DateTime.now().year, 4, 22): ['Easter Monday'],
-};
+import 'package:clouding_calendar/model/holidays.dart' as holidays;
 
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
@@ -429,7 +421,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return TableCalendar(
       calendarController: _calendarController,
       events: map,
-      holidays: _holidays,
+      holidays: holidays.Holidays.holidays,
       startingDayOfWeek: StartingDayOfWeek.monday,
       calendarStyle: CalendarStyle(
         selectedColor: Colors.purple[200],
@@ -455,7 +447,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       locale: 'en_US',
       calendarController: _calendarController,
       events: map,
-      holidays: _holidays,
+      holidays: holidays.Holidays.holidays,
       initialCalendarFormat: CalendarFormat.month,
       formatAnimation: FormatAnimation.slide,
       startingDayOfWeek: StartingDayOfWeek.sunday,
@@ -628,7 +620,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     Timer timer = new Timer.periodic(new Duration(seconds: 10), (timer) async {
       // Find reminders according to email
       String email = await getUserEmail();
-      var url = rt.Global.serverUrl + '/queryreminder?email=' + email;
+      var url = rt.Global.serverUrl + '/reminder/query?email=' + email;
       var response =  await http.post(
         Uri.encodeFull(url),
         headers: {
@@ -653,7 +645,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               id: id,
             );
             if (reminder['repetition'] == 0) {
-              url = rt.Global.serverUrl + '/dropreminder?id=' + reminder['id'];
+              url = rt.Global.serverUrl + '/reminder/drop?id=' + reminder['id'];
               response = await http.post(
                 Uri.encodeFull(url),
                 headers: {
@@ -663,7 +655,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               );
             } else {
               // Update the next remind time
-              url = rt.Global.serverUrl + '/updatereminder?id=' + reminder['id'];
+              url = rt.Global.serverUrl + '/reminder/update?id=' + reminder['id'];
               response = await http.post(
                 Uri.encodeFull(url),
                 headers: {
@@ -684,7 +676,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     Timer timer = new Timer.periodic(new Duration(seconds: 10), (timer) async {
       //根据用户名找到提醒
       String email = await getUserEmail();
-      var url = rt.Global.serverUrl + '/queryevent?email=' + email;
+      var url = rt.Global.serverUrl + '/event/query?email=' + email;
       var response =  await http.post(
         Uri.encodeFull(url),
         headers: {
@@ -710,7 +702,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               id: id,
             );
             if (event['repetition'] == 0) {
-              url = rt.Global.serverUrl + '/dropevent?id=' + event['id'];
+              url = rt.Global.serverUrl + '/event/drop?id=' + event['id'];
               response = await http.post(
                 Uri.encodeFull(url),
                 headers: {
@@ -719,7 +711,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 }
               );
             } else {
-              url = rt.Global.serverUrl + '/updateevent?id=' + event['id'];
+              url = rt.Global.serverUrl + 'event/update?id=' + event['id'];
               response = await http.post(
                 Uri.encodeFull(url),
                 headers: {
@@ -736,7 +728,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   getReminderDetail(String remindText) async {
     String email = await getUserEmail();
-    var url = rt.Global.serverUrl + '/detailreminder?email=' + email + '&remindText=' + remindText;
+    var url = rt.Global.serverUrl + '/reminder/detail?email=' + email + '&remindText=' + remindText;
     var response =  await http.post(
       Uri.encodeFull(url),
       headers: {

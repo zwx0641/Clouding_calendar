@@ -439,7 +439,7 @@ class _ReminderPageState extends State<ReminderPage> {
     //Which user sets the reminder
     String email = await getUserEmail();
     _remindTime = _remindTime.replaceAll(' ', 'T');
-    var url = rt.Global.serverUrl + '/savereminder';
+    var url = rt.Global.serverUrl + '/reminder/save';
     var response = await http.post(
       Uri.encodeFull(url),
       body: json.encode({

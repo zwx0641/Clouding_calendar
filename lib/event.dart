@@ -10,7 +10,6 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:clouding_calendar/routes.dart' as rt;
 import 'package:http/http.dart' as http;
 
@@ -460,7 +459,7 @@ class _EventPageState extends State<EventPage> {
     String email = await getUserEmail();
     _fromTime = _fromTime.replaceAll(' ', 'T');
     _endTime = _endTime.replaceAll(' ', 'T');
-    var url = rt.Global.serverUrl + '/saveevent';
+    var url = rt.Global.serverUrl + '/event/save';
     var response = await http.post(
       Uri.encodeFull(url),
       body: json.encode({

@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'routes.dart' as rt;
 import 'package:http/http.dart' as http;
@@ -62,7 +60,7 @@ Future<bool> getIntroState() async {
 //获取提醒事件
 Future<Map> getReminderEvent() async {
   String email = await getUserEmail();
-  var url = rt.Global.serverUrl + '/queryreminder?email=' + email;
+  var url = rt.Global.serverUrl + '/reminder/query?email=' + email;
   var response = await http.post(
     Uri.encodeFull(url),
     headers: {
