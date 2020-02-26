@@ -242,6 +242,7 @@ class _SigninPageState extends State<SigninPage> {
       // Save id to local cache
       setGlobalUserInfo(user['id']);
       setUserEmail(user['email']);
+      setUserToken(user['userToken']);
       setUserLoginState(true);
       Fluttertoast.showToast(
         msg: 'Logging you in...',

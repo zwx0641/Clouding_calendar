@@ -254,7 +254,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               FutureBuilder(
                 future: getUserVO(),
                 builder: (context, snapshot) {
-                  return header(snapshot.data['email'], snapshot.data['face_image']);
+                  //return header('email', '');
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return header(snapshot.data['email'], snapshot.data['face_image']);
+                  }
                 },
               ),
               ListTile(
@@ -711,7 +714,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 }
               );
             } else {
-              url = rt.Global.serverUrl + 'event/update?id=' + event['id'];
+              url = rt.Global.serverUrl + '/event/update?id=' + event['id'];
               response = await http.post(
                 Uri.encodeFull(url),
                 headers: {

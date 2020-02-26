@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'routes.dart' as rt;
 import 'package:http/http.dart' as http;
@@ -43,6 +44,18 @@ setUserEmail(userEmail) async {
 Future<String> getUserEmail() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString('userEmail');
+}
+
+// Set user token
+setUserToken(userToken) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString("userToken", userToken);
+}
+
+// Get user token
+Future<String> getUserToken() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString("userToken");
 }
 
 //设置介绍状态
@@ -121,16 +134,27 @@ Future<Map> getReminderEvent() async {
 
 Future getUserVO() async {
   String userId = await getGlobalUserInfo();
+  String userToken = await getUserToken();
   var url = rt.Global.serverUrl + '/user/query?userId=' + userId;
   var response = await http.post(
     Uri.encodeFull(url),
     headers: {
       "content-type" : "application/json",
       "accept" : "application/json",
+      'userId' : userId,
+      'userToken' : userToken
     }
   );
   var data = jsonDecode(response.body.toString());
+
+  if (data['status'] == 200) {
+    var user = data['data'];
+    return user;
+  } else if (data['status'] == 502) {
+    Fluttertoast.showToast(msg: data['msg'], 
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.CENTER);
+  }
   
-  var user = data['data'];
-  return user;
+  
 }
