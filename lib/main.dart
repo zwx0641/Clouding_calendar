@@ -256,7 +256,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 builder: (context, snapshot) {
                   //return header('email', '');
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return header(snapshot.data['email'], snapshot.data['face_image']);
+                    if (snapshot.data['status'] == 200) {
+                      return header(snapshot.data['data']['email'], snapshot.data['data']['face_image']);
+                    } else if (snapshot.data['status'] == 502) {
+                      Navigator.push(context, CustomRoute(SigninPage()));
+                    }
                   }
                 },
               ),

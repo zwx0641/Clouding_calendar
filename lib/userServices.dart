@@ -145,15 +145,16 @@ Future getUserVO() async {
       'userToken' : userToken
     }
   );
-  var data = jsonDecode(response.body.toString());
+  var user = jsonDecode(response.body.toString());
 
-  if (data['status'] == 200) {
-    var user = data['data'];
+  if (user['status'] == 200) {
+    //var user = data['data'];
     return user;
-  } else if (data['status'] == 502) {
-    Fluttertoast.showToast(msg: data['msg'], 
+  } else if (user['status'] == 502) {
+    Fluttertoast.showToast(msg: user['msg'], 
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.CENTER);
+    return user;
   }
   
   
