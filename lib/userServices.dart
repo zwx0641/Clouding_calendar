@@ -156,6 +156,4 @@ Future getUserVO() async {
       gravity: ToastGravity.CENTER);
     return user;
   }
-  
-  
 }
