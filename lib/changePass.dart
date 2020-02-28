@@ -4,11 +4,9 @@ import 'package:clouding_calendar/signin.dart';
 import 'package:clouding_calendar/userServices.dart';
 import 'package:clouding_calendar/widgets/errorDialog.dart';
 import "package:flutter/material.dart";
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'const/gradient_const.dart';
 import 'const/styles.dart';
-import 'main.dart';
 import 'package:clouding_calendar/routes.dart' as rt;
 import 'package:http/http.dart' as http;
 

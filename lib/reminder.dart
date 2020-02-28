@@ -17,10 +17,31 @@ import 'package:clouding_calendar/routes.dart' as rt;
 import 'package:http/http.dart' as http;
 
 class ReminderPage extends StatefulWidget {
-  _ReminderPageState createState() => _ReminderPageState();
+  final String id;
+  final String remindText;
+  final DateTime remindTime;
+  final int repetition;
+  final String email;
+
+  const ReminderPage({Key key, this.id, this.remindText, this.remindTime, this.repetition, this.email}) : super(key: key);
+  
+
+  _ReminderPageState createState() => _ReminderPageState(
+    id, remindText, remindTime, repetition, email
+  );
 }
 
 class _ReminderPageState extends State<ReminderPage> {
+  // Parameters
+  final String id;
+  final String remindText;
+  final DateTime remindTime;
+  final int repetition;
+  final String email;
+
+
+
+  // Initialization
   String _currentDate = 'Select Date';
   String _currentTime = 'Select Time';
   DateTime _selectedDate;
@@ -30,8 +51,10 @@ class _ReminderPageState extends State<ReminderPage> {
   String _currentRepeat = "Does not repeat";
   int _repetition = 0;
   TextEditingController _controller = TextEditingController();
-  bool _switchSelected = true;
-  bool _invisible = true;
+  bool _switchSelected = false;
+  bool _invisible = false;
+
+  _ReminderPageState(this.id, this.remindText, this.remindTime, this.repetition, this.email);
 
   void changeDropDownLocationItem(String selectedRepeat) {
     setState(() {
@@ -51,6 +74,7 @@ class _ReminderPageState extends State<ReminderPage> {
         _currentDate = formatDate(picked, [yyyy, '-', mm, '-', 'dd']);
         _selectedDate = picked;
       });
+    print(_remindText);
   }
 
   Future _selectTime() async {
@@ -67,8 +91,26 @@ class _ReminderPageState extends State<ReminderPage> {
   }
 
   @override
+  void initState() { 
+    super.initState();
+    if (_repeatArray[repetition] != null) {
+      _currentRepeat = _repeatArray[repetition];
+    } 
+    
+    Future.delayed(Duration.zero, () {
+      _remindText = remindText;
+      _repetition = repetition;
+      _selectedDate = remindTime;
+      _selectedTime = TimeOfDay(hour: remindTime.hour, minute: remindTime.minute);
+      _repetition = repetition;
+    
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final _media = MediaQuery.of(context).size;
+
 
     return Scaffold(
       appBar: SignupApbar(
@@ -108,14 +150,14 @@ class _ReminderPageState extends State<ReminderPage> {
                   height: 40,
                 ),
                 fieldColorBox(
-                    SIGNUP_BACKGROUND, "REMINDER NAME", _controller),
+                    SIGNUP_BACKGROUND, "REMINDER NAME", _controller, remindText),
                 dateColorBox(
                     SIGNUP_BACKGROUND, "TIME", _currentDate, _selectDate, _currentTime, _selectTime),
                 shadowColorBox(
                     SIGNUP_CARD_BACKGROUND, "ALL DAY"),
                 Wrap(children: <Widget>[
-                  locationColorBox(
-                      SIGNUP_BACKGROUND, "LOCATION", _currentRepeat),
+                locationColorBox(
+                      SIGNUP_BACKGROUND, "REPEAT TYPE", _currentRepeat),
                 ]),
                 
                 SizedBox(
@@ -143,6 +185,8 @@ class _ReminderPageState extends State<ReminderPage> {
 
   Widget locationColorBox(
       Gradient gradient, String title, String currentLocation) {
+    
+
     return Padding(
       padding: const EdgeInsets.only(
         left: 30.0,
@@ -207,6 +251,7 @@ class _ReminderPageState extends State<ReminderPage> {
 
   Widget shadowColorBox(
       Gradient gradient, String title) {
+    
     return Padding(
       padding: const EdgeInsets.only(
         left: 30.0,
@@ -267,7 +312,7 @@ class _ReminderPageState extends State<ReminderPage> {
   }
 
   Widget fieldColorBox(Gradient gradient, String title,
-      TextEditingController controller) {
+      TextEditingController controller, String remindText) {
     return Padding(
       padding: const EdgeInsets.only(
         left: 30.0,
@@ -304,8 +349,10 @@ class _ReminderPageState extends State<ReminderPage> {
               flex: 2,
               child: Wrap(
                 children: <Widget>[
-                  TextField(
-                    controller: controller,
+                  TextFormField(
+                    //controller: controller,
+                    initialValue: remindText,
+                    style: TextStyle(fontFamily: 'Montserrat'),
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         hintStyle: TextStyle(
@@ -360,7 +407,7 @@ class _ReminderPageState extends State<ReminderPage> {
                 children: <Widget>[
                   FlatButton(
                     child: Text(
-                      date,
+                      date == 'Select Date' ? formatDate(remindTime, [yyyy, '-', mm, '-', 'dd']) : date,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.black,
@@ -378,7 +425,8 @@ class _ReminderPageState extends State<ReminderPage> {
               offstage: _invisible,
               child: FlatButton(
                 child: Text(
-                  time,
+                  remindTime.hour == 0 && remindTime.minute == 0 && remindTime.second == 0 ? 
+                  time : '${TimeOfDay(hour: remindTime.hour, minute: remindTime.minute).format(context)}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black,
@@ -443,6 +491,7 @@ class _ReminderPageState extends State<ReminderPage> {
     var response = await http.post(
       Uri.encodeFull(url),
       body: json.encode({
+          'id' : id,
           'email' : email,
           'remindText' : _remindText,
           'remindTime' : _remindTime,

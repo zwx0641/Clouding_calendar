@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:clouding_calendar/const/gradient_const.dart';
 import 'package:clouding_calendar/eventDetails.dart';
 import 'package:clouding_calendar/userServices.dart';
 import 'package:flutter/material.dart';

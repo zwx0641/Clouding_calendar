@@ -1,4 +1,6 @@
 import 'package:clouding_calendar/common/appInfo.dart';
+import 'package:clouding_calendar/custom_router.dart';
+import 'package:clouding_calendar/reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +36,18 @@ class ReminderDetails extends StatelessWidget {
             resizeToAvoidBottomPadding: false,
             backgroundColor: Colors.white,
             appBar: AppBar(
-              
+              actions: <Widget>[
+                new IconButton(
+                  icon: Icon(Icons.edit, color: Colors.white,), 
+                  onPressed: () {
+                    Navigator.push(context, CustomRoute(ReminderPage(
+                      id: id, remindText: remindText,
+                      remindTime: remindTime, email: email,
+                      repetition: repetition,
+                    )));
+                  }
+                )
+              ],
               centerTitle: true,
               title: Text(
                 "Reminder Details",
