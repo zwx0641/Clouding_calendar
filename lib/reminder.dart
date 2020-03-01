@@ -66,7 +66,7 @@ class _ReminderPageState extends State<ReminderPage> {
   Future _selectDate() async {
     DateTime picked = await showDatePicker(
         context: context,
-        initialDate: new DateTime.now(),
+        initialDate: _selectedDate == null ? DateTime.now() : _selectedDate,
         firstDate: new DateTime(2016),
         lastDate: new DateTime(2050));
     if (picked != null)

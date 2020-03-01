@@ -1,4 +1,6 @@
 import 'package:clouding_calendar/common/appInfo.dart';
+import 'package:clouding_calendar/custom_router.dart';
+import 'package:clouding_calendar/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -55,6 +57,18 @@ class EventDetails extends StatelessWidget {
                   fontFamily: 'Montserrat'
                 ),
               ),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.edit), 
+                  onPressed: () {
+                    Navigator.push(context, CustomRoute(EventPage(
+                      id: id, email: email, eventName: eventName, 
+                      location: location, remark: remark, fromTime: fromTime,
+                      endTime: endTime, eventType: eventType, repetition: repetition,
+                    )));
+                  }, 
+                  color: Colors.white,)
+              ],
               elevation: 0.0,
             ),
             body: Container(

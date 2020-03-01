@@ -25,24 +25,66 @@ int _repetition;
 int _eventType;
 
 class EventPage extends StatefulWidget {
+  final String id;
+  final String email;
+  final String eventName;
+  final String location;
+  final String remark;
+  final DateTime fromTime;
+  final DateTime endTime;
+  final int eventType;
+  final int repetition;
+
+  const EventPage({Key key, this.id, this.email, this.eventName, this.location, this.remark, this.fromTime, this.endTime, this.eventType, this.repetition}) : super(key: key);  
+
+
+
   @override
-  _EventPageState createState() => _EventPageState();
+  _EventPageState createState() => _EventPageState(
+    id, email, eventName, location, remark, fromTime, endTime, eventType, repetition
+  );
 }
 
 class _EventPageState extends State<EventPage> {
+  // Parameters
+  final String id;
+  final String email;
+  final String eventName;
+  final String location;
+  final String remark;
+  final DateTime fromTime;
+  final DateTime endTime;
+  final int eventType;
+  final int repetition;  
+
+
+
   TextEditingController nameController;
   TextEditingController locationController;
  
+  // Repetition selected?
   bool _is0Selected = false;
   bool _is1Selected = false;
   bool _is2Selected = false;
   bool _is3Selected = false;
   bool _is4Selected = false;
+  // Event type selected?
   bool _isWSelected = false;
   bool _isSSelected = false;
   bool _isRSelected = false;
 
   GlobalKey<ScaffoldState> _scaffoldKey;
+
+  _EventPageState(
+    this.id, 
+    this.email, 
+    this.eventName, 
+    this.location, 
+    this.remark, 
+    this.fromTime, 
+    this.endTime, 
+    this.eventType, 
+    this.repetition);
 
   void dispose() {
     super.dispose();
@@ -55,12 +97,57 @@ class _EventPageState extends State<EventPage> {
     nameController = TextEditingController();
     locationController = TextEditingController();
     _scaffoldKey = GlobalKey<ScaffoldState>();
-    _selectedFromDate = DateTime.now();
-    _selectedFromTime = TimeOfDay(hour: 0, minute: 00);
-    _selectedEndDate = DateTime.now();
-    _selectedEndTime = TimeOfDay(hour: 0, minute: 00);
+    
     _repetition = -1;
     _eventType = -1;
+
+    Future.delayed(Duration.zero, () {
+      _eventName = eventName;
+      _location = location;
+      _remark = remark;
+      
+      if (repetition != null) {
+        _repetition = repetition;
+        _eventType = eventType;
+        switch (repetition) {
+          case 0:
+            _handle0Changed(true);
+            break;
+          case 1:
+            _handle1Changed(true);
+            break;
+          case 2:
+            _handle2Changed(true);
+            break;
+          case 3:
+            _handle3Changed(true);
+            break;
+          case 4:
+            _handle4Changed(true);
+            break;
+          default:
+        }
+        switch (eventType) {
+          case 1:
+            _handleWChanged(true);
+            break;
+          case 2:
+            _handleSChanged(true);
+            break;
+          case 3:
+            _handleRChanged(true);
+            break;
+          default:
+        }
+      }
+
+      if (fromTime != null) {
+        _selectedFromDate = fromTime;
+        _selectedEndDate = endTime;
+        _selectedFromTime = TimeOfDay(hour: fromTime.hour, minute: fromTime.minute);
+        _selectedEndTime = TimeOfDay(hour: endTime.hour, minute: endTime.minute);
+      }
+    });
   }
 
   // 判断哪种重复被选择
@@ -200,10 +287,12 @@ class _EventPageState extends State<EventPage> {
                 isRequired: true,
               ),
               TextFormField(
+                initialValue: _eventName,
                 style: TextStyle(
+                  fontFamily: 'Montserrat',
                   fontSize: 16,
                 ),
-                controller: nameController,
+                //controller: nameController,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   border: UnderlineInputBorder(),
@@ -219,9 +308,11 @@ class _EventPageState extends State<EventPage> {
                 isRequired: false,
               ),
               TextFormField(
-                controller: locationController,
+                initialValue: _location,
+//                controller: locationController,
                 keyboardType: TextInputType.text,
                 style: TextStyle(
+                  fontFamily: 'Montserrat',
                   fontSize: 16,
                 ),
                 textCapitalization: TextCapitalization.words,
@@ -422,13 +513,14 @@ class _EventPageState extends State<EventPage> {
             child: SingleChildScrollView(
               padding:
                   const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 0),
-              child: TextField(
+              child: TextFormField(
+                initialValue: _remark,
                 maxLines: null,
                 onChanged: (String txt) {
                   _remark = txt;
                 },
                 style: TextStyle(
-                  fontFamily: AppTheme.fontName,
+                  fontFamily: 'Montserrat',
                   fontSize: 16,
                   color: AppTheme.dark_grey,
                 ),
@@ -463,6 +555,7 @@ class _EventPageState extends State<EventPage> {
     var response = await http.post(
       Uri.encodeFull(url),
       body: json.encode({
+          'id' : id,
           'email' : email,
           'eventName' : _eventName,
           'location' : _location,
@@ -553,7 +646,9 @@ class _SelectDateTimeState extends State<SelectDateTime> {
   Future<DateTime> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: _selectedFromDate, firstDate: DateTime(1970), lastDate: DateTime(2100),
+      initialDate: _selectedFromDate == null ? DateTime.now() : _selectedFromDate, 
+      firstDate: DateTime(1970), 
+      lastDate: DateTime(2100),
     );
     if (picked != null) {
       setState(() {
@@ -571,7 +666,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
   Future<TimeOfDay> _selectTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
-      initialTime: _selectedFromTime,
+      initialTime: _selectedFromTime == null ? TimeOfDay(hour: 0, minute: 00) : _selectedFromTime,
     );
     if (picked != null) {
       setState(() {
@@ -605,12 +700,11 @@ class _SelectDateTimeState extends State<SelectDateTime> {
                   borderRadius: BorderRadius.circular(50),
                 ),
                 child: Text(
-                  _dateClicked == false
-                      ? "Pick Date"
-                      : formatDate(
-                        type == 1 ? _selectedFromDate 
-                                  : _selectedEndDate, [yyyy, '-', mm, '-', 'dd']
-                        ),
+                  type == 1 ? (_selectedFromDate == null ? 'Pick Date' : 
+                  formatDate(_selectedFromDate, [yyyy, '-', mm, '-', 'dd'])) :
+                  (_selectedEndDate == null ? 'Pick Date' : 
+                  formatDate(_selectedEndDate, [yyyy, '-', mm, '-', 'dd'])),
+
                   style: TextStyle(
                     color: YELLOW,
                     fontWeight: FontWeight.w700,
@@ -633,10 +727,11 @@ class _SelectDateTimeState extends State<SelectDateTime> {
                   borderRadius: BorderRadius.circular(50),
                 ),
                 child: Text(
-                  _timeClicked == false
-                      ? "Pick Time"
-                      : type == 1 ? '${_selectedFromTime.format(context)}' 
-                                  : '${_selectedEndTime.format(context)}',
+                  type == 1 ? (_selectedFromTime == null ? 'Pick Time' : 
+                  '${_selectedFromTime.format(context)}' ) :
+                  (_selectedEndDate == null ? 'Pick Time' : 
+                  '${_selectedEndTime.format(context)}' ),
+                  
                   style: TextStyle(
                     color: YELLOW,
                     fontWeight: FontWeight.w700,
@@ -749,7 +844,8 @@ class PanelTitle extends StatelessWidget {
           TextSpan(
             text: title,
             style: TextStyle(
-                fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),
+                fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500, 
+                fontFamily: 'Montserrat'),
           ),
           TextSpan(
             text: isRequired ? " *" : "",
