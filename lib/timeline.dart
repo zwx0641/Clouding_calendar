@@ -74,63 +74,64 @@ class _TimelinePageState extends State<TimelinePage> {
           child: FutureBuilder(
           future: _getEvent(),
           builder: (context, snap){
-              if(!snap.hasData) {
-                return CircularProgressIndicator();
-              }
+              
               List<EventData> events = snap.data;
+              
               List<TimelineModel> timelines = new List();
-              for (int i = 0; i < events.length; i++) {
-                timelines.add(
-                  TimelineModel(
-                    Card(
-                      margin: EdgeInsets.symmetric(vertical: 16.0),
-                      shape:
-                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                      clipBehavior: Clip.antiAlias,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: GestureDetector(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Image.asset(events[i].eventType == 1 ? 'images/work.jpg' 
-                                          : (events[i].eventType == 2 ? 'images/sport.jpg' 
-                                          : 'images/relax.jpg')),
-                              const SizedBox(
-                                height: 8.0,
-                              ),
-                              Text(
-                                events[i].fromTime + ' to ' + events[i].endTime, 
-                                style: Theme.of(context).textTheme.caption
-                              ),
-                              const SizedBox(
-                                height: 8.0,
-                              ),
-                              Text(
-                                events[i].name,
-                                style: Theme.of(context).textTheme.title,
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(
-                                height: 8.0,
-                              ),
-                            ],
+              if (events != null) {
+                for (int i = 0; i < events.length; i++) {
+                  timelines.add(
+                    TimelineModel(
+                      Card(
+                        margin: EdgeInsets.symmetric(vertical: 16.0),
+                        shape:
+                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        clipBehavior: Clip.antiAlias,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: GestureDetector(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Image.asset(events[i].eventType == 1 ? 'images/work.jpg' 
+                                            : (events[i].eventType == 2 ? 'images/sport.jpg' 
+                                            : 'images/relax.jpg')),
+                                const SizedBox(
+                                  height: 8.0,
+                                ),
+                                Text(
+                                  events[i].fromTime + ' to ' + events[i].endTime, 
+                                  style: Theme.of(context).textTheme.caption
+                                ),
+                                const SizedBox(
+                                  height: 8.0,
+                                ),
+                                Text(
+                                  events[i].name,
+                                  style: Theme.of(context).textTheme.title,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(
+                                  height: 8.0,
+                                ),
+                              ],
+                            ),
+                            onTap: () => getEventDetail(events[i].id),
                           ),
-                          onTap: () => getEventDetail(events[i].id),
                         ),
                       ),
-                    ),
-                    position:
-                        i % 2 == 0 ? TimelineItemPosition.right : TimelineItemPosition.left,
-                    isFirst: i == 0,
-                    isLast: i == events.length,
-                    iconBackground: events[i].eventType == 1 ? Colors.cyan 
-                                    : (events[i].eventType == 2 ? Colors.redAccent : Colors.amber),
-                    icon: Icon(events[i].eventType == 1 ? Icons.work 
-                              : (events[i].eventType == 2 ? Icons.pool : Icons.music_note)
-                          )
-                  )
-                );
+                      position:
+                          i % 2 == 0 ? TimelineItemPosition.right : TimelineItemPosition.left,
+                      isFirst: i == 0,
+                      isLast: i == events.length,
+                      iconBackground: events[i].eventType == 1 ? Colors.cyan 
+                                      : (events[i].eventType == 2 ? Colors.redAccent : Colors.amber),
+                      icon: Icon(events[i].eventType == 1 ? Icons.work 
+                                : (events[i].eventType == 2 ? Icons.pool : Icons.music_note)
+                            )
+                    )
+                  );
+                }
               }
               return Timeline(
                   children: timelines,

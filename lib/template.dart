@@ -31,7 +31,7 @@ Widget header(String email, String faceImage) {
               children: <Widget>[
                 new GestureDetector(
                   child: CircleAvatar(
-                    backgroundImage: faceUrl != null ? NetworkImage(faceUrl) :
+                    backgroundImage: faceImage != '' ? NetworkImage(faceUrl) :
                                       AssetImage('images/pic1.jpg'),
                     radius: 35.0,
                   ),
@@ -67,6 +67,7 @@ Widget header(String email, String faceImage) {
 Future getImage() async {
   try {
     String userId = await getGlobalUserInfo();
+    String userToken = await getUserToken();
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     var uploadURL = rt.Global.serverUrl + '/user/uploadFace?userId=' + userId;
 
@@ -78,6 +79,10 @@ Future getImage() async {
 
       // Upload file
       var request = new http.MultipartRequest("POST", uri);
+      request.headers.addAll({
+        'userId' : userId,
+        'userToken' : userToken,
+      });
       var multipartFile = new http.MultipartFile('file', stream, length,
             filename: basename(image.path));
             //contentType: new MediaType('image', 'png'));
