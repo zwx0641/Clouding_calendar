@@ -239,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             onPressed: () {Share.share('Zalendar\n http://github.com/zwx0641');},
           ),
         ],
-        title: Text('A clouding calendar', style: TextStyle(
+        title: Text('Zalendar', style: TextStyle(
                 fontSize: 22.0,
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.normal),),

@@ -143,7 +143,7 @@ class _SigninPageState extends State<SigninPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'WELCOME BACK!',
+            'WELCOME TO ZALENDAR!',
             textAlign: TextAlign.left,
             style: TextStyle(
                 letterSpacing: 3,
