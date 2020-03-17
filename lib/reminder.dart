@@ -25,7 +25,7 @@ class ReminderPage extends StatefulWidget {
 
   const ReminderPage({Key key, this.id, this.remindText, this.remindTime, this.repetition, this.email}) : super(key: key);
   
-
+  @override
   _ReminderPageState createState() => _ReminderPageState(
     id, remindText, remindTime, repetition, email
   );
@@ -99,10 +99,14 @@ class _ReminderPageState extends State<ReminderPage> {
     
     Future.delayed(Duration.zero, () {
       _remindText = remindText;
-      _repetition = repetition;
-      _selectedDate = remindTime;
-      _selectedTime = TimeOfDay(hour: remindTime.hour, minute: remindTime.minute);
-      _repetition = repetition;
+      
+      if (remindTime != null) {
+        _selectedDate = remindTime;
+        _selectedTime = TimeOfDay(hour: remindTime.hour, minute: remindTime.minute);
+      }
+      if (repetition != null) {
+        _repetition = repetition;
+      }
     
     });
   }
@@ -407,7 +411,8 @@ class _ReminderPageState extends State<ReminderPage> {
                 children: <Widget>[
                   FlatButton(
                     child: Text(
-                      date == 'Select Date' ? formatDate(remindTime, [yyyy, '-', mm, '-', 'dd']) : date,
+                      date == 'Select Date' ? 
+                      (remindTime == null ? date : formatDate(remindTime, [yyyy, '-', mm, '-', 'dd'])) : date,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.black,
@@ -425,7 +430,7 @@ class _ReminderPageState extends State<ReminderPage> {
               offstage: _invisible,
               child: FlatButton(
                 child: Text(
-                  remindTime.hour == 0 && remindTime.minute == 0 && remindTime.second == 0 ? 
+                  remindTime == null ? 
                   time : '${TimeOfDay(hour: remindTime.hour, minute: remindTime.minute).format(context)}',
                   style: TextStyle(
                     fontSize: 12,

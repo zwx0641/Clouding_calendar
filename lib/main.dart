@@ -406,7 +406,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       leading: new Icon(Icons.alarm_add, color: Colors.black),
                       title: new Text('Reminder', style: hintAndValueStyle),
                       onTap: () {
-                        Navigator.of(context).push(new CustomRoute(new ReminderPage()));
+                        Navigator.of(context).push(new CustomRoute(new ReminderPage(
+                          id: null, remindText: null,
+                          remindTime: null, email: null,
+                          repetition: 1,
+                        )));
                       },
                     )
                   ],

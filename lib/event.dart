@@ -261,7 +261,7 @@ class _EventPageState extends State<EventPage> {
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       appBar: SignupApbar(
-        title: "CREATE REMINDER",
+        title: "CREATE EVENT",
       ),
       body: Stack(
         children: <Widget>[
@@ -583,7 +583,7 @@ class _EventPageState extends State<EventPage> {
               child: ListBody(
                 children: <Widget>[
                   SizedBox(height: 15),
-                  Text('Failed to set a reminder', style: TextStyle(fontSize: 20),),
+                  Text('Failed to set a event', style: TextStyle(fontSize: 20),),
                 ],
               ),
             ),
