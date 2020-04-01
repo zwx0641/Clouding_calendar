@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:clouding_calendar/userServices.dart';
+import 'package:clouding_calendar/widget/NewAppBar.dart';
 import 'package:clouding_calendar/widgets/errorDialog.dart';
 import 'package:flutter/material.dart';
 import 'widget/signup_apbar.dart';
@@ -25,7 +26,7 @@ class _SignupPageState extends State<SignupPage> {
     final double statusbarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      appBar: SignupApbar(
+      appBar: NewAppBar(
         title: "Sign Up",
       ),
       body: SingleChildScrollView(

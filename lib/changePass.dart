@@ -95,7 +95,8 @@ class _ChangePassPageState extends State<ChangePassPage> {
             if (value.isEmpty) {
               return 'Please enter your new password';
             }
-            var passReg = RegExp('[a-z,A-Z,0-9]');
+            var passReg = RegExp(
+          r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$");
             if (!passReg.hasMatch(value)) {
               return 'Password should contain both letters and numbers';
             }
@@ -190,6 +191,8 @@ class _ChangePassPageState extends State<ChangePassPage> {
               if (!passReg.hasMatch(_newPass)) {
                 return _showErrorDialog('Caution', 
                 'From 8 to 16 digits. At least 1 capital, 1 lower-case, 1 number');
+              } else if (_newPass == _formerPass) {
+                return _showErrorDialog('Caution', 'New password and former password cannot be the same!');
               }
               sendPost();
             },
