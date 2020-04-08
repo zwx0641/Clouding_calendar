@@ -34,7 +34,7 @@ class _SigninPageState extends State<SigninPage> {
                 'images/logo_signup.png',
                 width: 100.0,
                 height: 100.0,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               ),
             ),
             headlinesWidget(),
