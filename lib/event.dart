@@ -729,7 +729,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
                 child: Text(
                   type == 1 ? (_selectedFromTime == null ? 'Pick Time' : 
                   '${_selectedFromTime.format(context)}' ) :
-                  (_selectedEndDate == null ? 'Pick Time' : 
+                  (_selectedEndTime == null ? 'Pick Time' : 
                   '${_selectedEndTime.format(context)}' ),
                   
                   style: TextStyle(
