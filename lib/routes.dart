@@ -18,7 +18,8 @@ final routes = {
 
 
 class Global {
-  static final serverUrl = 'http://169.254.247.236:8080';
+  //static final serverUrl = 'http://169.254.247.236:8080';
+  static final serverUrl = 'https://www.zalendar.info/zalendar';
   static Map<DateTime, List> events = new Map();
   static Map<int, String> repeatText = {
     0 : 'Do not repeat',
