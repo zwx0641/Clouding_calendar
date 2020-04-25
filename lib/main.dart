@@ -177,10 +177,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     Provider.of<AppInfoProvider>(context, listen: false).setTheme(colorKey);
   }
 
-  Future onSelectNotification(String payload) async => await Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => MyHomePage())
-  );
+  Future onSelectNotification(String payload) async {
+    var payloadList = payload.split(' ');
+    if (payloadList[0] == '1') {
+      getReminderDetail(payloadList[1]);
+    } else {
+      getReminderDetail(payloadList[1]);
+    }
+  }
 
   Future onDidReceiveLocalNotification(
     int id, String title, String body, String payload) async {
@@ -656,6 +660,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               notifications, 
               title: "Don't forget this!", 
               body: reminder['remindText'],
+              payload: '1 ' + reminder['id'],
               id: id,
             );
             if (reminder['repetition'] == 0) {
@@ -713,6 +718,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               notifications, 
               title: "On your schedule: ", 
               body: event['eventName'],
+              payload: '2 ' + event['id'],
               id: id,
             );
             if (event['repetition'] == 0) {

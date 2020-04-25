@@ -20,17 +20,19 @@ Future _showNotification(
   FlutterLocalNotificationsPlugin notifications, {
     @required String title,
     @required String body,
+    @required String payload,
     @required NotificationDetails notificationDetails,
     int id = 0
   }) => 
-  notifications.show(id, title, body, notificationDetails);
+  notifications.show(id, title, body, notificationDetails, payload: payload);
 
 Future showOngoingNotification(
   FlutterLocalNotificationsPlugin notifications, {
     @required String title,
     @required String body,
+    @required String payload,
     int id = 0
   }) => 
   _showNotification(notifications, 
-    title: title, body: body, id: id, notificationDetails: _ongoing
+    title: title, body: body, id: id, notificationDetails: _ongoing, payload: payload
   );
