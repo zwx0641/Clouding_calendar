@@ -186,7 +186,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
     final Email email = Email(
       body: _emailBody,
-      subject: 'Feedback' + _feedbacker,
+      subject: 'Feedback and help from ' + _feedbacker,
       recipients: ['zwx0641@outlook.com'],
       isHTML: false,
     );

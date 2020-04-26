@@ -23,11 +23,12 @@ import 'package:share/share.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:clouding_calendar/template.dart';
 import 'common/Sphelper.dart';
+import 'eventDetails.dart';
 import 'routes.dart' as rt;
 import 'package:http/http.dart' as http;
 import 'userServices.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'showReminder.dart';
+import 'reminderDetails.dart';
 import 'package:clouding_calendar/model/holidays.dart' as holidays;
 
 void main() {
@@ -177,12 +178,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     Provider.of<AppInfoProvider>(context, listen: false).setTheme(colorKey);
   }
 
+  // The app navigate to the details when the notification is selected
   Future onSelectNotification(String payload) async {
     var payloadList = payload.split(' ');
+    print(payload);
     if (payloadList[0] == '1') {
       getReminderDetail(payloadList[1]);
     } else {
-      getReminderDetail(payloadList[1]);
+      getEventDetail(payloadList[1]);
     }
   }
 
@@ -660,7 +663,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               notifications, 
               title: "Don't forget this!", 
               body: reminder['remindText'],
-              payload: '1 ' + reminder['id'],
+              payload: '1 ' + reminder['remindText'],
               id: id,
             );
             if (reminder['repetition'] == 0) {
@@ -691,9 +694,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   startEventTimer() async {
-    //设置一个监视器
+    // Start a monitor
     Timer timer = new Timer.periodic(new Duration(seconds: 10), (timer) async {
-      //根据用户名找到提醒
+      // Find reminders according to the username
       String email = await getUserEmail();
       var url = rt.Global.serverUrl + '/event/query?email=' + email;
       var response =  await http.post(
@@ -705,7 +708,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       );
       var data = jsonDecode(response.body.toString());
       List eventList = data['data'];
-      //根据提醒类型进行不同操作
+      // Do different things
       
       if (eventList?.isNotEmpty) {
         int id = -1;
@@ -747,6 +750,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   getReminderDetail(String remindText) async {
+    // Get the details of a reminder
     String email = await getUserEmail();
     var url = rt.Global.serverUrl + '/reminder/detail?email=' + email + '&remindText=' + remindText;
     var response =  await http.post(
@@ -769,7 +773,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       }
     }
     
-
     // Show details of a reminder
     Navigator.of(context).push(
       PageRouteBuilder<Null>(
@@ -781,6 +784,60 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 return Opacity(
                   opacity: animation.value,
                   child: ReminderDetails(_reminderId, _reminderEmail, _remindText, _remindTime, _repetition),
+                );
+              });
+        },
+        transitionDuration: Duration(milliseconds: 500),
+      ),
+    );
+  }
+
+  getEventDetail(String id) async {
+    // Get the details of an event
+    var url = rt.Global.serverUrl + '/event/detail?id=' + id;
+    var response =  await http.post(
+      Uri.encodeFull(url),
+      headers: {
+        "content-type" : "application/json",
+        "accept" : "application/json",
+      }
+    );
+    var data = jsonDecode(response.body.toString());
+    List eventList = data['data'];
+
+    String _eventId, _eventEmail, _eventName, _location, _remark;
+    DateTime _fromTime, _endTime;
+    int _eventType, _repetition;
+
+    if (eventList?.isNotEmpty) {
+      for (var event in eventList) {
+        _eventId = event['id'];
+        _eventEmail = event['email'];
+        _eventName = event['eventName'];
+        _location = event['location'];
+        _remark = event['remark'];
+        _fromTime = DateTime.fromMillisecondsSinceEpoch(event['fromTime']);
+        _endTime = DateTime.fromMillisecondsSinceEpoch(event['endTime']);
+        _eventType = event['eventType'];
+        _repetition = event['repetition'];
+      }
+    }
+    
+    Navigator.of(context).push(
+      PageRouteBuilder<Null>(
+        pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return AnimatedBuilder(
+              animation: animation,
+              builder: (BuildContext context, Widget child) {
+                return Opacity(
+                  opacity: animation.value,
+                  child: EventDetails(
+                    _eventId, _eventEmail,
+                    _eventName, _location,
+                    _remark, _fromTime,
+                    _endTime, _eventType, _repetition,
+                  ),
                 );
               });
         },

@@ -130,8 +130,6 @@ Future<Map> getReminderEvent() async {
   return eventMap;
 }
 
-
-
 Future getUserVO() async {
   String userId = await getGlobalUserInfo();
   String userToken = await getUserToken();
