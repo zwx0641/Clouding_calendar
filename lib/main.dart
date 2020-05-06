@@ -35,6 +35,8 @@ void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
 }
 
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -53,6 +55,7 @@ class MyApp extends StatelessWidget {
           }
 
           return MaterialApp(
+            navigatorKey: navigatorKey,
             theme: ThemeData(
               primarySwatch: _themeColor,
               primaryColor: _themeColor,

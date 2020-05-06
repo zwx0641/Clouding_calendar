@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 import 'package:clouding_calendar/routes.dart' as rt;
+import 'main.dart';
 
 
 Widget header(String email, String faceImage) {
@@ -108,6 +109,7 @@ Future getImage() async {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER
         );
+        navigatorKey.currentState.pushNamedAndRemoveUntil('signinRoute', (Route router) => false);
       }
     }
   } catch (e) {}
