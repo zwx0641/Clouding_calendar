@@ -16,7 +16,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
     'What is this app about?',
     'Zalendar is a calendar application with an server deployed on the cloud.\n\nThis is a final project in my senior year and the app will be open-source once my final year ends.\n\nThis app is integrated with functionalities like reminder, events...\n\nIf you liked this app or found it helpful, please fork/star it on GitHub.\n\nThanks!',
     'Credits',
-    'This app would not have been possible without the Flutter framework, the open source projects that I\'ve used and the tireless efforts of developers and contributors in the Flutter community.',
+    'This app would not have been possible without the Flutter framework, the open source projects that I\'ve used and the tireless efforts of developers and contributors such as Urmil in the Flutter community.',
   ]; //the text in the tile
 
   @override
@@ -149,7 +149,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                                     size: 24.0,
                                   ),
                                   onPressed: () =>
-                                      launchURL('https://urmilshroff.tech/'),
+                                      launchURL('https://zwx0641.github.io/'),
                                 ),
                                 IconButton(
                                   icon: Icon(
@@ -158,7 +158,7 @@ class _MyAboutPageState extends State<MyAboutPage> {
                                     size: 26.0,
                                   ),
                                   onPressed: () => launchURL(
-                                      'https://twitter.com/urmilshroff'),
+                                      'https://weibo.com/u/1917479654'),
                                 ),
                               ],
                             ),
