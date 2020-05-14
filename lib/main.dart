@@ -625,6 +625,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     var data = jsonDecode(response.body.toString());
     var status = data['status'];
 
+    Navigator.popAndPushNamed(context, 'signinRoute');
     if (status == 200) {
       Fluttertoast.showToast(
         msg: 'Logout successfully',
@@ -635,7 +636,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       //deleteGloabalUserInfo();
       // Set user state as logout
       setUserLoginState(false);
-      Navigator.popAndPushNamed(context, 'signinRoute');
+      // Navigator.popAndPushNamed(context, 'signinRoute');
     }
   }
 
