@@ -346,6 +346,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 title: Text('Logout', style: hintAndValueStyle,),
                 leading: new CircleAvatar(child: new Icon(Icons.power_settings_new),),
                 onTap: () {
+                  Navigator.popAndPushNamed(context, 'signinRoute');
                   logout();
                 },
               )
@@ -625,7 +626,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     var data = jsonDecode(response.body.toString());
     var status = data['status'];
 
-    Navigator.popAndPushNamed(context, 'signinRoute');
+    
     if (status == 200) {
       Fluttertoast.showToast(
         msg: 'Logout successfully',
